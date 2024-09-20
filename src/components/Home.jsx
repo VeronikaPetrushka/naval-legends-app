@@ -115,15 +115,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly'
   },
   menuIcon: {
-    height: 50,
-    width: 50,
+    height: 53,
+    width: 53,
     borderRadius: 10,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: 'white',
-    marginBottom: 5
+    marginBottom: 8
   },
   btn: {
     padding: 15,

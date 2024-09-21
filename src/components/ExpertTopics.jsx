@@ -26,7 +26,7 @@ const ExpertTopics = () => {
     };
 
     const handleNavigateToQuiz = () => {
-        navigation.navigate('ExpertQuiz', { topic: selectedTopic });
+        navigation.navigate('ExpertQuizScreen', { topic: selectedTopic });
         handleCloseModal();
     };
 

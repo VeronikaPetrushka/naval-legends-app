@@ -7,6 +7,7 @@ import QuizModeScreen from './src/screens/QuizModeScreen.jsx';
 import NewcomerTopicsScreen from './src/screens/NewcomerTopicsScreen.jsx';
 import ExpertTopicsScreen from './src/screens/ExpertTopicsScreen.jsx';
 import NewcomerQuizScreen from './src/screens/NewcomerQuizScreen.jsx';
+import ExpertQuizScreen from './src/screens/ExpertQuizScreen.jsx';
 
 enableScreens();
 
@@ -39,6 +40,11 @@ const App = () => {
         <Stack.Screen 
           name="NewcomerQuizScreen" 
           component={NewcomerQuizScreen} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="ExpertQuizScreen" 
+          component={ExpertQuizScreen} 
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { SafeAreaView, TouchableOpacity, StyleSheet, Text, View, Alert } from "react-native";
-// import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icons from './Icons';
 
 const MenuPanel = () => {
-    // const navigation = useNavigation();
+    const navigation = useNavigation();
     // const route = useRoute();
     // const [isQuizVisited, setIsQuizVisited] = useState(false);
 
@@ -30,9 +30,9 @@ const MenuPanel = () => {
     //     }, [])
     // );
 
-    // const handleNavigateToHome = () => {
-    //     navigation.navigate('MainMenuScreen');
-    // };
+    const handleNavigateToQuizMode = () => {
+        navigation.navigate('QuizModeScreen');
+    };
 
     // const handleNavigateToGallery = () => {
     //     navigation.navigate('AlbumScreen');
@@ -74,9 +74,8 @@ const MenuPanel = () => {
         <SafeAreaView style={styles.container}>
 
             <View style={styles.btnContainer}>
-            <TouchableOpacity style={styles.button}>
-                {/* // onPress={handleNavigateToStore} 
-                // style={[styles.button, isCurrent('StoreScreen') && styles.activeButton]} */}
+            <TouchableOpacity style={styles.button} onPress={handleNavigateToQuizMode}> 
+                {/* // style={[styles.button, isCurrent('StoreScreen') && styles.activeButton]} */}
                 <Icons type={quiz} />
             </TouchableOpacity>
             <Text style={styles.btnTxt}>Quiz</Text>
@@ -133,7 +132,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: '#8d7d65',
         alignSelf: "center",
-        // borderRadius: 40,
     },
     btnContainer: {
         alignItems: 'center',

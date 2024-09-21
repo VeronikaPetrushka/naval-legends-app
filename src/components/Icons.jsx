@@ -40,10 +40,17 @@ const Icons = ({ type }) => {
     case 'leader-board':
       imageSource = require('../assets/panel/leader-board.png');
       break;
-    // case 'plus':
-    //   imageSource = require('../assets/quiz/plus.png');
-    //   iconStyle = styles.plusIcon;
-    //   break;
+    case 'mode':
+      imageSource = require('../assets/mode/question.png');
+      iconStyle = styles.modeIcon;
+      break;
+    case 'arrow':
+      imageSource = require('../assets/mode/arrow.png');
+      iconStyle = styles.modeIcon;
+      break;
+    case 'score':
+      imageSource = require('../assets/quiz/score.png');
+      break;
   }
 
   return (
@@ -60,9 +67,11 @@ const styles = StyleSheet.create({
     height: '100%',
     objectFit: 'cover'
   },
-  plusIcon: {
-    width: 55,
-    height: 55,
+  modeIcon: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    tintColor: 'white',
   },
 });
 

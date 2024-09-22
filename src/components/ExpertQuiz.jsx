@@ -1,58 +1,324 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import DraggableFlatList from 'react-native-draggable-flatlist';
+import { useNavigation } from '@react-navigation/native';
 import expert from '../constants/expert.js';
+import Icons from './Icons.jsx';
 
 const ExpertQuiz = ({ topic }) => {
+    const navigation = useNavigation();
+
     const [selectedOption, setSelectedOption] = useState(null);
+    const [placedOptions, setPlacedOptions] = useState(Array(10).fill(null));
+    const [score, setScore] = useState(0);
+    const [modalVisible, setModalVisible] = useState(true);
+    const [timer, setTimer] = useState(60);
+    const [isFinished, setIsFinished] = useState(false);
+    const [showHintModal, setShowHintModal] = useState(false);
 
     const topicData = expert.find((item) => item.topic === topic);
 
-    const handleOptionPress = (option) => {
-        setSelectedOption(option.title);
+    useEffect(() => {
+        let interval;
+        if (timer > 0 && !isFinished) {
+            interval = setInterval(() => {
+                setTimer((prevTimer) => prevTimer - 1);
+            }, 1000);
+        } else if (timer === 0) {
+            finishQuiz();
+        }
+        return () => clearInterval(interval);
+    }, [timer, isFinished]);
+
+    const finishQuiz = () => {
+        setIsFinished(true);
     };
+
+    const closeModal = () => {
+        setModalVisible(false);
+        setTimer(60);
+    };
+
+    const handleDrop = (option, index) => {
+        const updatedPlacedOptions = [...placedOptions];
+        updatedPlacedOptions[index] = option;
+    
+        if (isCorrect(option, index)) {
+            setScore((prevScore) => prevScore + 100);
+        }
+    
+        setPlacedOptions(updatedPlacedOptions);
+        setSelectedOption(null);
+    
+        if (!updatedPlacedOptions.includes(null)) {
+            finishQuiz();
+        }
+    
+        if (score >= 10) {
+            const correctOptions = topicData.correctOrder.map((item) => item.title);
+            const nextAvailableOption = topicData.options.find(option => correctOptions.includes(option.title));
+            if (nextAvailableOption) {
+            }
+        }
+    };
+
+    const isCorrect = (option, index) => {
+        return option && option.title === topicData.correctOrder[index].title;
+    };
+
+    const renderOption = ({ item }) => {
+        const isPlaced = placedOptions.includes(item);
+        const isCorrectlyPlaced = isPlaced && isCorrect(item, placedOptions.indexOf(item));
+
+        return (
+            <TouchableOpacity
+                onPress={() => !isPlaced && setSelectedOption(item)}
+                style={[
+                    styles.optionButton,
+                    selectedOption === item && styles.selectedOption,
+                    isPlaced && styles.placedOption,
+                ]}
+                disabled={isCorrectlyPlaced}
+            >
+                <Text style={styles.optionText}>{item.title}</Text>
+                {item.subTitle && <Text style={styles.subTitle}>{item.subTitle}</Text>}
+            </TouchableOpacity>
+        );
+    };
+
+    const handleGoBack = () => {
+        navigation.navigate('ExpertTopicsScreen');
+    };
+
+    const useHint = () => {
+        if (score >= 10) {
+            const correctOptions = topicData.correctOrder.map((item) => item.title);
+            const remainingOptions = topicData.options.filter(option => !placedOptions.includes(option));
+    
+            const optionToPlace = remainingOptions.find((option) => correctOptions.includes(option.title));
+    
+            if (optionToPlace) {
+                const index = topicData.correctOrder.findIndex((item) => item.title === optionToPlace.title);
+                const updatedPlacedOptions = [...placedOptions];
+                updatedPlacedOptions[index] = optionToPlace;
+    
+                setPlacedOptions(updatedPlacedOptions);
+                setScore((prevScore) => prevScore - 10 + 100);
+    
+                if (!updatedPlacedOptions.includes(null)) {
+                    finishQuiz();
+                }
+    
+                const newOptions = topicData.options.filter((option) => option.title !== optionToPlace.title);
+                topicData.options = newOptions;
+            }
+        }
+        setShowHintModal(false);
+    };
+    
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{topicData.topic}</Text>
-            <Text style={styles.task}>{topicData.task}</Text>
+            {isFinished ? (
+                <View style={styles.finishContainer}>
+                    <Text style={styles.title}>{topicData.topic}</Text>
+                    <Text style={styles.finishText}>Total Score: {score}</Text>
+                    <Text style={styles.finishText}>Time Taken: {60 - timer} seconds</Text>
+                    <Text style={styles.finishText}>Correct Options: {placedOptions.filter((option) => option !== null).length} / {placedOptions.length}</Text>
+                    <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}>
+                        <Text style={styles.goBackText}>Go Back</Text>
+                    </TouchableOpacity>
+                </View>
+            ) : (
+                <>
+                    <Text style={styles.title}>{topicData.topic}</Text>
+                    <View style={styles.quizStata}>
+                        <View style={styles.scoreContainer}>
+                            <View style={styles.scoreIcon}>
+                                <Icons type="score" />
+                            </View>
+                            <Text style={styles.scoreTxt}>{score}</Text>
+                        </View>
+                        <Text style={styles.timerText}>{timer} s</Text>
+                    </View>
 
-            {topicData.options.map((option, index) => (
-                <TouchableOpacity
-                    key={index}
-                    style={[
-                        styles.optionButton,
-                        selectedOption === option.title && styles.selectedOption
-                    ]}
-                    onPress={() => handleOptionPress(option)}
-                >
-                    <Text style={styles.optionText}>{option.title}</Text>
-                    {option.subTitle && <Text style={styles.subTitle}>{option.subTitle}</Text>}
-                </TouchableOpacity>
-            ))}
+                    {/* Modal for displaying the task */}
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={closeModal}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={styles.modalContent}>
+                                <Text style={styles.modalTask}>Task</Text>
+                                <Text style={styles.modalTaskDesc}>{topicData.task}</Text>
+                                <TouchableOpacity
+                                    style={styles.closeButton}
+                                    onPress={closeModal}
+                                >
+                                    <Icons type="close" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
 
-            {selectedOption && (
-                <Text style={styles.selectedText}>
-                    Selected: {selectedOption}
-                </Text>
+                    <TouchableOpacity
+                        style={styles.hintButton}
+                        onPress={() => setShowHintModal(true)}
+                        disabled={score < 10}
+                    >
+                        <Text style={styles.hintText}>Use Hint (10 points)</Text>
+                    </TouchableOpacity>
+
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={showHintModal}
+                        onRequestClose={() => setShowHintModal(false)}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={styles.modalContent}>
+                                <Text style={styles.modalText}>Do you want to use a hint? It will cost you 10 points.</Text>
+                                <TouchableOpacity style={styles.modalButton} onPress={useHint}>
+                                    <Text style={styles.modalButtonText}>Yes</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.modalButton} onPress={() => setShowHintModal(false)}>
+                                    <Text style={styles.modalButtonText}>No</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
+
+                    <View style={styles.quizContainer}>
+                        {/* First Column: Draggable Options */}
+                        <View style={styles.optionsContainer}>
+                            <DraggableFlatList
+                                data={topicData.options.filter(option => !placedOptions.includes(option))}
+                                renderItem={renderOption}
+                                keyExtractor={(item, index) => `draggable-item-${index}`}
+                                onDragEnd={({ data }) => setPlacedOptions(data)}
+                                scrollEnabled={true}
+                            />
+                        </View>
+
+                        {/* Second Column: Correct Order Indices */}
+                        <View style={styles.indexContainer}>
+                            <ScrollView style={styles.indexScroll}>
+                                {topicData.correctOrder.map((_, index) => {
+                                    const placedOption = placedOptions[index];
+                                    return (
+                                        <TouchableOpacity
+                                            key={index}
+                                            style={[
+                                                styles.indexBox,
+                                                placedOption && isCorrect(placedOption, index) && styles.correctIndexBox,
+                                                placedOption && !isCorrect(placedOption, index) && styles.incorrectIndexBox
+                                            ]}
+                                            onPress={() => {
+                                                if (selectedOption) {
+                                                    handleDrop(selectedOption, index);
+                                                } else if (placedOption) {
+                                                    setSelectedOption(placedOption);
+                                                    const updatedPlacedOptions = [...placedOptions];
+                                                    updatedPlacedOptions[index] = null;
+                                                    setPlacedOptions(updatedPlacedOptions);
+                                                }
+                                            }}
+                                            disabled={placedOption !== null && isCorrect(placedOption, index)}
+                                        >
+                                            {placedOption && isCorrect(placedOption, index) ? (
+                                                <>
+                                                    <Text style={styles.optionText}>{topicData.correctOrder[index].title}</Text>
+                                                    <Text style={styles.subTitle}>{topicData.correctOrder[index].period}</Text>
+                                                </>
+                                            ) : (
+                                                placedOption ? (
+                                                    <>
+                                                        <Text style={styles.optionText}>{placedOption.title}</Text>
+                                                        <Text style={styles.subTitle}>{placedOption.subTitle}</Text>
+                                                    </>
+                                                ) : (
+                                                    <Text style={styles.indexText}>{index + 1}</Text>
+                                                )
+                                            )}
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                            </ScrollView>
+                        </View>
+                    </View>
+                </>
             )}
         </View>
     );
 };
 
+
+
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         padding: 20,
+        paddingTop: 150,
+        paddingBottom: 60,
         justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f5f5f5',
+        width: '100%',
+        height: '100%',
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 30,
+        textAlign: 'center',
     },
-    task: {
-        fontSize: 18,
+    score: {
+        fontSize: 20,
+        fontWeight: 'bold',
         marginBottom: 20,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: '80%',
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+    },
+    modalTask: {
+        fontSize: 23,
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginBottom: 10
+    },
+    modalTaskDesc: {
+        fontSize: 21,
+        textAlign: 'center',
+    },
+    closeButton: {
+        padding: 10,
+        width: 40,
+        height: 40,
+        position: 'absolute',
+        top: 10,
+        right: 10,
+    },
+    quizContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        height: '100%',
+        paddingBottom: 50
+    },
+    optionsContainer: {
+        width: '47%',
+        height: '100%'
     },
     optionButton: {
         padding: 10,
@@ -60,22 +326,130 @@ const styles = StyleSheet.create({
         backgroundColor: '#8d7d65',
         borderRadius: 5,
         alignItems: 'center',
+        width: '100%',
     },
     selectedOption: {
-        backgroundColor: '#4d4d4d',
+        backgroundColor: '#554d40',
+    },
+    placedOption: {
+        backgroundColor: '#ccc',
     },
     optionText: {
         fontSize: 18,
         color: '#fff',
+        textAlign: 'center'
     },
     subTitle: {
         fontSize: 14,
         color: '#d3d3d3',
+        textAlign: 'center'
     },
-    selectedText: {
-        marginTop: 20,
-        fontSize: 16,
+    indexContainer: {
+        width: '47%',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        height: '100%'
+    },
+    indexScroll: {
+        width: '100%',
+    },
+    indexBox: {
+        padding: 10,
+        marginBottom: 10,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        alignItems: 'center',
+        width: '100%',
+        backgroundColor: '#8d7d65',
+    },
+    correctIndexBox: {
+        backgroundColor: '#3d85c6',
+    },
+    indexText: {
+        fontSize: 18,
         color: '#fff',
+        textAlign: 'center'
+    },
+    scoreTxt: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: 'white'
+    },
+    scoreContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+    },
+    scoreIcon: {
+        width: 40,
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 10
+    },
+    finishContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    finishText: {
+        fontSize: 20,
+        marginBottom: 10,
+    },
+    goBackButton: {
+        padding: 10,
+        backgroundColor: '#8d7d65',
+        borderRadius: 5,
+        marginTop: 20,
+    },
+    goBackText: {
+        fontSize: 18,
+        color: '#fff',
+    },
+    timerText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white'
+    },
+    quizStata: {
+        width: 500,
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        backgroundColor: '#625746',
+        marginBottom: 30
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: '80%',
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    modalText: {
+        fontSize: 18,
+        marginBottom: 20,
+    },
+    modalButton: {
+        padding: 10,
+        backgroundColor: '#8d7d65',
+        borderRadius: 10,
+        marginVertical: 5,
+        width: '100%',
+        alignItems: 'center',
+    },
+    modalButtonText: {
+        color: '#fff',
+        fontSize: 18,
     },
 });
 

@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { SafeAreaView, TouchableOpacity, StyleSheet, Text, View, Alert } from "react-native";
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icons from './Icons';
 
 const MenuPanel = () => {
     const navigation = useNavigation();
-    // const route = useRoute();
-    // const [isQuizVisited, setIsQuizVisited] = useState(false);
 
     const quiz = 'quiz';
     const fight = 'fight';
@@ -15,60 +12,21 @@ const MenuPanel = () => {
     const shop = 'shop';
     const leaderBoard = 'leader-board';
 
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         const checkQuizVisited = async () => {
-    //             try {
-    //                 const visited = await AsyncStorage.getItem('quizVisited');
-    //                 setIsQuizVisited(!!visited); 
-    //             } catch (error) {
-    //                 console.error('Failed to retrieve quizVisited:', error);
-    //             }
-    //         };
-
-    //         checkQuizVisited();
-    //     }, [])
-    // );
-
     const handleNavigateToQuizMode = () => {
         navigation.navigate('QuizModeScreen');
     };
 
-    // const handleNavigateToGallery = () => {
-    //     navigation.navigate('AlbumScreen');
-    // };
+    const handleNavigateToFight = () => {
+        navigation.navigate('FightScreen');
+    };
 
-    // const handleNavigateToStore = () => {
-    //     if (isQuizVisited) {
-    //         navigation.navigate('StoreScreen');
-    //     } else {
-    //         Alert.alert(
-    //             "Store Unavailable",
-    //             "You need to complete at least one quiz before shopping!",
-    //             [
-    //                 {
-    //                     text: "Close",
-    //                     onPress: () => console.log("Alert closed"),
-    //                     style: "cancel"
-    //                 },
-    //                 {
-    //                     text: "Go to Quiz",
-    //                     onPress: () => navigation.navigate('NewGameScreen')
-    //                 }
-    //             ]
-    //         );
-    //     }
-    // };
+    const handleNavigateToStories = () => {
+        navigation.navigate('LibraryScreen');
+    };
 
-    // const handleNavigateToResults = () => {
-    //     navigation.navigate('ResultsScreen');
-    // };
-
-    // const handleNavigateToSettings = () => {
-    //     navigation.navigate('SettingsScreen');
-    // };
-
-    // const isCurrent = (screen) => route.name === screen;
+    const handleNavigateToLeaders = () => {
+        navigation.navigate('LeaderboardScreen');
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -82,18 +40,16 @@ const MenuPanel = () => {
             </View>
 
             <View style={styles.btnContainer}>
-            <TouchableOpacity style={styles.button}>
-                {/* // onPress={handleNavigateToGallery} 
-                // style={[styles.button, isCurrent('AlbumScreen') && styles.activeButton]} */}
+            <TouchableOpacity style={styles.button} onPress={handleNavigateToFight}>
+                {/* // style={[styles.button, isCurrent('AlbumScreen') && styles.activeButton]} */}
                 <Icons type={fight} />
             </TouchableOpacity>
             <Text style={styles.btnTxt}>Fight</Text>
             </View>
 
             <View style={styles.btnContainer}>
-            <TouchableOpacity style={styles.button}>
-                {/* // onPress={handleNavigateToHome} 
-                // style={[styles.button, isCurrent('MainMenuScreen') && styles.activeButton]} */}
+            <TouchableOpacity style={styles.button} onPress={handleNavigateToStories}>
+                {/* // style={[styles.button, isCurrent('MainMenuScreen') && styles.activeButton]} */}
                 <Icons type={stories} />
             </TouchableOpacity>
             <Text style={styles.btnTxt}>Stories</Text>
@@ -109,9 +65,8 @@ const MenuPanel = () => {
             </View>
         
             <View style={styles.btnContainer}>
-            <TouchableOpacity style={styles.button}>
-                {/* // onPress={handleNavigateToSettings} 
-                // style={[styles.button, isCurrent('SettingsScreen') && styles.activeButton]} */}
+            <TouchableOpacity style={styles.button} onPress={handleNavigateToLeaders}> 
+                {/* // style={[styles.button, isCurrent('SettingsScreen') && styles.activeButton]} */}
                 <Icons type={leaderBoard} />
             </TouchableOpacity>
             <Text style={styles.btnTxt}>Leaders</Text>

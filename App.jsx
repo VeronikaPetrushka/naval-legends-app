@@ -8,6 +8,10 @@ import NewcomerTopicsScreen from './src/screens/NewcomerTopicsScreen.jsx';
 import ExpertTopicsScreen from './src/screens/ExpertTopicsScreen.jsx';
 import NewcomerQuizScreen from './src/screens/NewcomerQuizScreen.jsx';
 import ExpertQuizScreen from './src/screens/ExpertQuizScreen.jsx';
+import LeaderboardScreen from './src/screens/LeaderboardScreen.jsx';
+import FightScreen from './src/screens/FightScreen.jsx'
+import AnalysisScreen from './src/screens/AnalysisScreen.jsx'
+import LibraryScreen from './src/screens/LibraryScreen.jsx'
 
 enableScreens();
 
@@ -45,6 +49,26 @@ const App = () => {
         <Stack.Screen 
           name="ExpertQuizScreen" 
           component={ExpertQuizScreen} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="LeaderboardScreen" 
+          component={LeaderboardScreen} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="FightScreen" 
+          component={FightScreen} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="AnalysisScreen" 
+          component={AnalysisScreen} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="LibraryScreen" 
+          component={LibraryScreen} 
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>

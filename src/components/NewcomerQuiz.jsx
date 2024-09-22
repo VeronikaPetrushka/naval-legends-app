@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import newcomer from '../constants/newcomer.js';
 import Icons from './Icons.jsx';
@@ -18,9 +19,26 @@ const NewcomerQuiz = ({ topic }) => {
     const [showHintModal, setShowHintModal] = useState(false);
     const [isHintUsed, setIsHintUsed] = useState(false);
     const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+    const [totalBalance, setTotalBalance] = useState(0);
 
     const quizScore = 'score';
-    const mode = 'mode'
+    const mode = 'mode';
+    const balance = 'balance';
+
+     useEffect(() => {
+        const fetchBalance = async () => {
+            try {
+                const balance = await AsyncStorage.getItem('totalBalance');
+                if (balance !== null) {
+                    setTotalBalance(parseInt(balance));
+                }
+            } catch (error) {
+                console.log('Error fetching balance', error);
+            }
+        };
+
+        fetchBalance();
+    }, []);
 
     useEffect(() => {
         const newTimer = setInterval(() => {
@@ -38,9 +56,17 @@ const NewcomerQuiz = ({ topic }) => {
         return () => clearInterval(newTimer);
     }, []);
 
-    const finishQuiz = () => {
+    const finishQuiz = async () => {
         setQuizFinished(true);
         clearInterval(timer);
+
+        try {
+            const newBalance = totalBalance + score;
+            await AsyncStorage.setItem('totalBalance', newBalance.toString());
+            setTotalBalance(newBalance);
+        } catch (error) {
+            console.log('Error updating balance', error);
+        }
     };
 
     const handleAnswer = (option) => {
@@ -73,6 +99,7 @@ const NewcomerQuiz = ({ topic }) => {
     const currentQuestion = selectedTopic.questions[currentQuestionIndex];
 
     const handleGoBack = () => {
+        clearInterval(timer);
         navigation.navigate('NewcomerTopicsScreen');
     };
 
@@ -109,6 +136,14 @@ const NewcomerQuiz = ({ topic }) => {
         <View style={styles.quizContainer}>
             {quizFinished ? (
                 <View style={styles.summaryContainer}>
+                    <View style={styles.balanceContainer}>
+                        <View style={styles.balanceIcon}>
+                            <Icons type={balance}/>
+                        </View>
+                        <Text style={styles.balanceText}>
+                            {totalBalance}
+                        </Text>
+                    </View>
                     {timeRemaining === 0 && <Text style={styles.oopsText}>Oops, you ran out of time!</Text>}
                     <Text style={styles.finish}>Quiz Finished!</Text>
                     <Text style={styles.quizTopicFinish}>{selectedTopic.topic}</Text>
@@ -235,12 +270,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         width: '100%',
         height: '100%',
-        paddingVertical: 50,
-        paddingHorizontal: 10
+        padding: 10
     },
     summaryText: {
         fontSize: 22,
-        marginBottom: 200,
+        marginBottom: 100,
         textAlign: 'center'
     },
     goBackButton: {
@@ -326,7 +360,8 @@ const styles = StyleSheet.create({
     quizTopicFinish: {
         fontWeight: 800,
         fontSize: 28,
-        marginBottom: 70
+        marginBottom: 70,
+        textAlign: 'center'
     },
     resultsContainer: {
         width: 500,
@@ -355,7 +390,8 @@ const styles = StyleSheet.create({
     quizTopic: {
         fontWeight: 800,
         fontSize: 28,
-        marginBottom: 30
+        marginBottom: 30,
+        textAlign: 'center'
     },
     quizStata: {
         width: 500,
@@ -371,6 +407,27 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: 'white'
+    },
+    balanceContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 30,
+        padding: 10,
+        width: 150,
+        backgroundColor: '#8d7d65',
+        marginBottom: 20,
+        marginTop: -30
+    },
+    balanceIcon: {
+        width: 40,
+        height: 40,
+        marginRight: 10
+    },
+    balanceText: {
+        fontSize: 22,
+        color: 'white',
+        fontWeight: 'bold'
     }
 });
 

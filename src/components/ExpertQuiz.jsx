@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import expert from '../constants/expert.js';
 import Icons from './Icons.jsx';
@@ -15,8 +16,27 @@ const ExpertQuiz = ({ topic }) => {
     const [timer, setTimer] = useState(60);
     const [isFinished, setIsFinished] = useState(false);
     const [showHintModal, setShowHintModal] = useState(false);
+    const [totalBalance, setTotalBalance] = useState(0);
 
     const topicData = expert.find((item) => item.topic === topic);
+
+    const balance = 'balance';
+    const quizScore = 'score';
+
+    useEffect(() => {
+        const fetchBalance = async () => {
+            try {
+                const balance = await AsyncStorage.getItem('totalBalance');
+                if (balance !== null) {
+                    setTotalBalance(parseInt(balance));
+                }
+            } catch (error) {
+                console.log('Error fetching balance', error);
+            }
+        };
+
+        fetchBalance();
+    }, []);
 
     useEffect(() => {
         let interval;
@@ -30,8 +50,17 @@ const ExpertQuiz = ({ topic }) => {
         return () => clearInterval(interval);
     }, [timer, isFinished]);
 
-    const finishQuiz = () => {
+    const finishQuiz = async () => {
         setIsFinished(true);
+        clearInterval(timer);
+
+        try {
+            const newBalance = totalBalance + score;
+            await AsyncStorage.setItem('totalBalance', newBalance.toString());
+            setTotalBalance(newBalance);
+        } catch (error) {
+            console.log('Error updating balance', error);
+        }
     };
 
     const closeModal = () => {
@@ -121,6 +150,14 @@ const ExpertQuiz = ({ topic }) => {
         <View style={styles.container}>
             {isFinished ? (
                 <View style={styles.finishContainer}>
+                    <View style={styles.balanceContainer}>
+                        <View style={styles.balanceIcon}>
+                            <Icons type={balance}/>
+                        </View>
+                        <Text style={styles.balanceText}>
+                            {totalBalance}
+                        </Text>
+                    </View>
                     <Text style={styles.title}>{topicData.topic}</Text>
                     <Text style={styles.finishText}>Total Score: {score}</Text>
                     <Text style={styles.finishText}>Time Taken: {60 - timer} seconds</Text>
@@ -135,7 +172,7 @@ const ExpertQuiz = ({ topic }) => {
                     <View style={styles.quizStata}>
                         <View style={styles.scoreContainer}>
                             <View style={styles.scoreIcon}>
-                                <Icons type="score" />
+                                <Icons type={quizScore} />
                             </View>
                             <Text style={styles.scoreTxt}>{score}</Text>
                         </View>
@@ -236,7 +273,10 @@ const ExpertQuiz = ({ topic }) => {
                                                 placedOption ? (
                                                     <>
                                                         <Text style={styles.optionText}>{placedOption.title}</Text>
-                                                        <Text style={styles.subTitle}>{placedOption.subTitle}</Text>
+                                                        {placedOption.subTitle ?
+                                                        <Text style={styles.subTitle}>{placedOption.subTitle}</Text> 
+                                                        : ''
+                                                        }
                                                     </>
                                                 ) : (
                                                     <Text style={styles.indexText}>{index + 1}</Text>
@@ -451,6 +491,27 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
     },
+    balanceContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 30,
+        padding: 10,
+        width: 150,
+        backgroundColor: '#8d7d65',
+        marginBottom: 20,
+        marginTop: -30
+    },
+    balanceIcon: {
+        width: 40,
+        height: 40,
+        marginRight: 10
+    },
+    balanceText: {
+        fontSize: 22,
+        color: 'white',
+        fontWeight: 'bold'
+    }
 });
 
 export default ExpertQuiz;

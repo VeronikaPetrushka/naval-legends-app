@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icons from './Icons';
 
@@ -51,12 +51,6 @@ const Fight = () => {
         }
     };
 
-    // const handleFinishClose = () => {
-    //     setFinishVisible(false);
-    //     setCurrentStage(1);
-    //     setModalVisible(true);
-    // };
-
     const handleGoBack = () => {
         navigation.navigate('HomeScreen');
     };
@@ -68,6 +62,12 @@ const Fight = () => {
 
 
     return (
+        <ImageBackground
+        source={require('../assets/background/fight.png')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
         <View style={styles.container}>
             {/* Modal for Battle of Trafalgar */}
             <Modal
@@ -156,60 +156,75 @@ const Fight = () => {
                 <TouchableOpacity style={styles.rulesButton} onPress={() => setModalRulesVisible(true)}>
                     <Icons type={mode}/>
                 </TouchableOpacity>
+
+                <View style={styles.descContainer}>
+                <View style={styles.situationTextContainer}>
                 <Text style={styles.situationText}>
-                {currentStage === 1 ? "Situation: You, Admiral Nelson, are aboard HMS Victory and preparing your fleet for a clash with numerically superior enemy forces." : 
-                    currentStage === 2 ? "Situation: The battle has begun, and your ships are approaching the enemy. Your fleet is under intense artillery bombardment from the Franco-Spanish fleet." : 
-                    currentStage === 3 ? "Situation: Your ships have broken through the enemy line. Now you need to decide how to proceed to consolidate success and achieve victory." : 
-                    "Situation: The enemy fleet is beginning to suffer significant losses. However, the battle is not yet over, and you have the opportunity to either finish off the remaining enemy fleet or give them a chance to retreat."}
+                    <Text style={styles.situationTextBold}>Situation</Text>
+                    {'\n'}
+                {currentStage === 1 ? "You, Admiral Nelson, are aboard HMS Victory and preparing your fleet for a clash with numerically superior enemy forces." : 
+                    currentStage === 2 ? "The battle has begun, and your ships are approaching the enemy. Your fleet is under intense artillery bombardment from the Franco-Spanish fleet." : 
+                    currentStage === 3 ? "Your ships have broken through the enemy line. Now you need to decide how to proceed to consolidate success and achieve victory." : 
+                    "The enemy fleet is beginning to suffer significant losses. However, the battle is not yet over, and you have the opportunity to either finish off the remaining enemy fleet or give them a chance to retreat."}
                 </Text>
+
+                </View>
+
+                <View style={styles.situationTextContainer}>
                 <Text style={styles.stageText}>
                 {currentStage === 1 ? "Stage 1: Preparation for Battle" : 
                     currentStage === 2 ? "Stage 2: Beginning of the Attack" : 
                     currentStage === 3 ? "Stage 3: Climax of the Battle" : 
                     "Stage 4: Conclusion of the Battle"}
                 </Text>
+                </View>
+
+                </View>
+
                 {currentStage === 1 && (
                     <>
                         <TouchableOpacity style={styles.choiceButton} onPress={() => handleChoice('A')}>
-                            <Text style={styles.choiceText}>Choice A: Form the fleet into a single line for a classic naval battle.</Text>
+                            <Text style={styles.choiceText}><Text style={styles.choiceTextBold}>Choice A:</Text> Form the fleet into a single line for a classic naval battle.</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.choiceButton} onPress={() => handleChoice('B')}>
-                            <Text style={styles.choiceText}>Choice B: Divide the fleet into two columns and attack the enemy from both sides, breaking their line.</Text>
+                            <Text style={styles.choiceText}><Text style={styles.choiceTextBold}>Choice B:</Text> Divide the fleet into two columns and attack the enemy from both sides, breaking their line.</Text>
                         </TouchableOpacity>
                     </>
                 )}
                 {currentStage === 2 && (
                     <>
                         <TouchableOpacity style={styles.choiceButton} onPress={() => handleChoice('A')}>
-                            <Text style={styles.choiceText}>Choice A: Accelerate your movement to enter close combat as quickly as possible and avoid prolonged bombardment.</Text>
+                            <Text style={styles.choiceText}><Text style={styles.choiceTextBold}>Choice A:</Text> Accelerate your movement to enter close combat as quickly as possible and avoid prolonged bombardment.</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.choiceButton} onPress={() => handleChoice('B')}>
-                            <Text style={styles.choiceText}>Choice B: Maintain distance and gradually close in on the enemy to maximize artillery fire.</Text>
+                            <Text style={styles.choiceText}><Text style={styles.choiceTextBold}>Choice B:</Text> Maintain distance and gradually close in on the enemy to maximize artillery fire.</Text>
                         </TouchableOpacity>
                     </>
                 )}
                 {currentStage === 3 && (
                     <>
                         <TouchableOpacity style={styles.choiceButton} onPress={() => handleChoice('A')}>
-                            <Text style={styles.choiceText}>Choice A: Concentrate all forces on the enemy flagship to break their morale.</Text>
+                            <Text style={styles.choiceText}><Text style={styles.choiceTextBold}>Choice A:</Text> Concentrate all forces on the enemy flagship to break their morale.</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.choiceButton} onPress={() => handleChoice('B')}>
-                            <Text style={styles.choiceText}>Choice B: Divide the fleet into smaller groups to attack multiple enemy ships simultaneously and gradually destroy enemy forces.</Text>
+                            <Text style={styles.choiceText}><Text style={styles.choiceTextBold}>Choice B:</Text> Divide the fleet into smaller groups to attack multiple enemy ships simultaneously and gradually destroy enemy forces.</Text>
                         </TouchableOpacity>
                     </>
                 )}
                 {currentStage === 4 && (
                     <>
                         <TouchableOpacity style={styles.choiceButton} onPress={() => handleChoice('A')}>
-                            <Text style={styles.choiceText}>Choice A: Order all ships to pursue and destroy the remaining enemy forces.</Text>
+                            <Text style={styles.choiceText}><Text style={styles.choiceTextBold}>Choice A:</Text> Order all ships to pursue and destroy the remaining enemy forces.</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.choiceButton} onPress={() => handleChoice('B')}>
-                            <Text style={styles.choiceText}>Choice B: Focus on capturing enemy ships and taking prisoners.</Text>
+                            <Text style={styles.choiceText}><Text style={styles.choiceTextBold}>Choice B:</Text> Focus on capturing enemy ships and taking prisoners.</Text>
                         </TouchableOpacity>
                     </>
                 )}
             </View>
         </View>
+        </View>
+        </ImageBackground>
     );
 };
 
@@ -220,10 +235,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: '#f0f0f0',
         width: '100%',
         height: '100%',
     },
+    backgroundImage: {
+        width: '100%',
+        height: '110%',
+        justifyContent: 'center',
+      },
+      overlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+      },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -256,19 +282,36 @@ const styles = StyleSheet.create({
         top: 10,
         right: 10,
     },
+    descContainer: {
+        width :'100%',
+        height: 400,
+        marginTop: 50
+    },
     situationContainer: {
         marginTop: 20,
         alignItems: 'center',
+        width: '100%',
+        height: '100%',
+    },
+    situationTextContainer: {
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: 'white',
+        marginBottom: 30,
+        width: '100%'
     },
     situationText: {
-        fontSize: 18,
-        marginBottom: 10,
+        fontSize: 19,
         textAlign: 'center',
+    },
+    situationTextBold: {
+        fontWeight: 'bold',
+        fontSize: 22,
     },
     stageText: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 15,
+        textAlign: 'center'
     },
     choiceButton: {
         padding: 15,
@@ -280,8 +323,11 @@ const styles = StyleSheet.create({
     },
     choiceText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 19,
         textAlign: 'center',
+    },
+    choiceTextBold: {
+        fontWeight: 'bold',
     },
     rulesButton: {
         height: 53,

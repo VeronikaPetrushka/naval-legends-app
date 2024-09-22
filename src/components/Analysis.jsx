@@ -14,7 +14,7 @@ const Analysis = () => {
 
     return (
         <ImageBackground
-        source={require('../assets/background/home.jpg')}
+        source={require('../assets/background/fight.png')}
         style={styles.backgroundImage}
         resizeMode="cover"
       >
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
       },
       overlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
@@ -125,25 +125,29 @@ const styles = StyleSheet.create({
     intro: {
         fontSize: 19,
         marginBottom: 15,
-        color: 'white'
+        color: 'white',
+        textAlign: 'center'
     },
     subtitle: {
         fontSize: 22,
         fontWeight: '600',
         marginTop: 15,
-        marginBottom: 5,
-        color: 'white'
+        marginBottom: 10,
+        color: 'white',
+        textAlign: 'center'
     },
     strategy: {
         fontSize: 19,
         fontWeight: 'bold',
         marginBottom: 5,
-        color: 'white'
+        color: 'white',
+        textAlign: 'center'
     },
     analysis: {
         fontSize: 19,
         marginBottom: 15,
-        color: 'white'
+        color: 'white',
+        textAlign: 'center'
     },
     goBackIcon: {
         width: 60,

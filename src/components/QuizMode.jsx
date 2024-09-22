@@ -11,6 +11,7 @@ const QuizMode = () => {
   const [expertModalVisible, setExpertModalVisible] = useState(false);
 
   const arrow = 'arrow'
+  const mode = 'mode'
 
   const handleGoBack = () => {
     navigation.navigate('HomeScreen');
@@ -23,8 +24,6 @@ const QuizMode = () => {
   const closeExpertModal = async () => {
     setExpertModalVisible(false);
   };
-
-    const mode = 'mode'
 
   return (
     <ImageBackground

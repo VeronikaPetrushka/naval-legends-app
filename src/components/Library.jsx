@@ -105,15 +105,17 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     title: {
-        fontSize: 16,
+        fontSize: 18,
         color: '#555',
+        textAlign: 'center',
+        marginTop: 10
     },
     factContainer: {
         padding: 15,
         alignItems: 'center',
     },
     scrollView: {
-        maxHeight: 600, // Ensure ScrollView doesn't exceed card height
+        maxHeight: 600,
     },
     factTitle: {
         fontSize: 22,

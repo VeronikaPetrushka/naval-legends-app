@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import library from '../constants/library.js';
 
-
 const Library = () => {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [selectedBrochure, setSelectedBrochure] = useState(null);
@@ -23,8 +22,8 @@ const Library = () => {
     const renderItem = ({ item }) => (
         <TouchableOpacity style={styles.card} onPress={() => toggleBrochure(item)}>
             {selectedBrochure && selectedBrochure.name === item.name ? (
-                <ScrollView contentContainerStyle={styles.factContainer}>
-                    <Text style={styles.factTitle}>{item.fact ? item.fact.factName : item.name}</Text>
+                <ScrollView contentContainerStyle={styles.factContainer} style={styles.scrollView}>
+                    <Text style={styles.factTitle}>{item.admiral}</Text>
                     <Text style={styles.factDescription}>
                         {item.fact ? item.fact.description : (item.date ? item.date : '')}
                     </Text>
@@ -110,8 +109,11 @@ const styles = StyleSheet.create({
         color: '#555',
     },
     factContainer: {
-        padding: 10,
+        padding: 15,
         alignItems: 'center',
+    },
+    scrollView: {
+        maxHeight: 600, // Ensure ScrollView doesn't exceed card height
     },
     factTitle: {
         fontSize: 22,

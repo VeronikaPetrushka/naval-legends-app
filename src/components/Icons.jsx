@@ -60,6 +60,19 @@ const Icons = ({ type }) => {
     case 'pin':
       imageSource = require('../assets/quiz/pin.png');
       break;
+    case 'plus':
+      imageSource = require('../assets/library/plus.png');
+      iconStyle = styles.plusIcon;
+      break;
+    case 'folder':
+      imageSource = require('../assets/menu/folder.png');
+      break;
+    case 'delete':
+      imageSource = require('../assets/library/delete.png');
+      break;
+    case 'edit':
+      imageSource = require('../assets/library/edit.png');
+      break;
   }
 
   return (
@@ -82,6 +95,12 @@ const styles = StyleSheet.create({
     objectFit: 'cover',
     tintColor: 'white',
   },
+  plusIcon: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    tintColor: '#322d24',
+  }
 });
 
 export default Icons;

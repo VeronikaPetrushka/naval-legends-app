@@ -1,16 +1,66 @@
-import React, { useState } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import library from '../constants/library.js';
 import Icons from './Icons.jsx';
+import CreateBrochure from './CreateBrochure.jsx';
 
 const Library = () => {
     const navigation = useNavigation();
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [selectedCard, setSelectedCard] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [userBrochures, setUserBrochures] = useState([]);
+    const [brochureToEdit, setBrochureToEdit] = useState(null);
 
     const close = 'close';
-    const arrow = 'arrow'
+    const arrow = 'arrow';
+
+    const loadUserBrochures = useCallback(async () => {
+        try {
+            const storedUserBrochures = await AsyncStorage.getItem('UserBrochures');
+            if (storedUserBrochures) {
+                setUserBrochures(JSON.parse(storedUserBrochures));
+            } else {
+                setUserBrochures([]);
+            }
+        } catch (error) {
+            console.error('Failed to load user brochures:', error);
+        }
+    }, []);
+
+    const handleBrochureSubmit = async (newBrochure) => {
+        let updatedBrochures;
+        if (brochureToEdit) {
+            updatedBrochures = userBrochures.map(brochure => 
+                brochure.name === brochureToEdit.name ? newBrochure : brochure
+            );
+        } else {
+            updatedBrochures = [...userBrochures, newBrochure];
+        }
+        setUserBrochures(updatedBrochures);
+        await AsyncStorage.setItem('UserBrochures', JSON.stringify(updatedBrochures));
+        setBrochureToEdit(null);
+    };
+
+    useEffect(() => {
+        loadUserBrochures();
+    }, [loadUserBrochures]);
+
+    const combinedBrochures = [...library, ...userBrochures];
+
+    const deleteUserBrochure = async (item) => {
+        const updatedBrochures = userBrochures.filter(brochure => brochure.name !== item.name);
+        setUserBrochures(updatedBrochures);
+        await AsyncStorage.setItem('UserBrochures', JSON.stringify(updatedBrochures));
+        Alert.alert("Deleted", "Brochure has been removed from your album.");
+    };
+
+    const handleEditBrochure = (item) => {
+        setBrochureToEdit(item);
+        setIsModalVisible(true);
+    };
 
     const onScrollEnd = (event) => {
         const index = Math.floor(event.nativeEvent.contentOffset.x / styles.card.width);
@@ -33,38 +83,59 @@ const Library = () => {
         <View style={styles.card}>
             {selectedCard && selectedCard.name === item.name ? (
                 <View style={styles.descSideContainer}>
-                    <TouchableOpacity style={styles.closeButton} onPress={() => {
-                        setSelectedCard(null);
-                    }}>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedCard(null)}>
                         <Icons type={close} />
                     </TouchableOpacity>
                     <ScrollView contentContainerStyle={styles.factContainer} style={styles.scrollView}>
-                        <Text style={styles.factTitle}>{item.admiral}</Text>
+                        <Text style={styles.factTitle}>{item.admiral || item.name}</Text>
                         {item.description ? <Text style={styles.factDescription}>{item.description}</Text> : null}
                     </ScrollView>
                 </View>
             ) : (
                 <TouchableOpacity style={styles.cardFront} onPress={() => toggleCard(item)}>
-                    <Image source={item.image} style={styles.image} />
-                    <Text style={styles.admiralName}>{item.admiral}</Text>
-                    <Text style={styles.title}>{item.title}</Text>
+                    <Image 
+                        source={typeof item.image === 'string' ? { uri: item.image } : item.image}
+                        style={styles.image} 
+                    />
+                    <Text style={styles.admiralName}>{item.admiral || item.name}</Text>
+                    {item.title && <Text style={styles.title}>{item.title}</Text>}
                 </TouchableOpacity>
+            )}
+    
+            {userBrochures.some(brochure => brochure.name === item.name) && (
+                <View style={styles.actionButtons}>
+                    <TouchableOpacity onPress={() => deleteUserBrochure(item)} style={styles.deleteButton}>
+                        <Icons type={'delete'} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleEditBrochure(item)} style={styles.editButton}>
+                        <Icons type={'edit'} />
+                    </TouchableOpacity>
+                </View>
             )}
         </View>
     );
+    
+    const handleAddBrochure = () => {
+        setBrochureToEdit(null);
+        setIsModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setIsModalVisible(false);
+    };
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                style={styles.goBackIcon}
-                onPress={handleGoBack}
-                >
-                    <Icons type={arrow}/>
+            <TouchableOpacity style={styles.goBackIcon} onPress={handleGoBack}>
+                <Icons type={arrow}/>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.plusIcon} onPress={handleAddBrochure}>
+                <Icons type={'plus'}/>
             </TouchableOpacity>
             <FlatList
-                data={library}
+                data={combinedBrochures}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.admiral}
+                keyExtractor={(item) => item.admiral || item.id}
                 horizontal
                 pagingEnabled
                 onScroll={onScrollEnd}
@@ -72,16 +143,25 @@ const Library = () => {
                 style={styles.flatList}
             />
             <View style={styles.dotsContainer}>
-                {library.map((_, index) => (
+                {combinedBrochures.map((_, index) => (
                     <View 
                         key={index} 
                         style={[styles.dot, selectedIndex === index ? styles.activeDot : null]} 
                     />
                 ))}
             </View>
+
+            <CreateBrochure 
+                visible={isModalVisible} 
+                onClose={closeModal}
+                onSubmit={handleBrochureSubmit}
+                brochureToEdit={brochureToEdit}
+            />
         </View>
     );
 };
+
+
 
 const styles = StyleSheet.create({
     container: {
@@ -109,7 +189,7 @@ const styles = StyleSheet.create({
         marginTop: 60
     },
     card: {
-        minWidth: 290,
+        // width: 365,
         width: 345,
         height: 530,
         marginHorizontal: 10,
@@ -186,6 +266,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         left: 10
+    },
+    plusIcon: {
+        width: 60,
+        height: 60,
+        padding: 10,
+        position: 'absolute',
+        top: 10,
+        right: 10
     }
 });
 

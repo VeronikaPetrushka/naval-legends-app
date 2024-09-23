@@ -48,5 +48,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+ 	<string>This app uses the Photo Library to select a photo only.</string>
+	<key>NSCameraUsageDescription</key>
+ 	<string>This app uses the camera to take a user avatar and photo to store in app private internal data set.</string>
+	<key>NSMicrophoneUsageDescription</key>
+ 	<string>To record audio files during video recording</string>
 </dict>
 </plist>

@@ -110,8 +110,8 @@ const styles = StyleSheet.create({
     },
     card: {
         minWidth: 290,
-        width: 365,
-        height: 600,
+        width: 345,
+        height: 530,
         marginHorizontal: 10,
         backgroundColor: '#f9f9f9',
         borderRadius: 15,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: 450,
+        height: 400,
         borderRadius: 10,
     },
     admiralName: {

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import library from '../constants/library.js';
 import Icons from './Icons.jsx';
 import CreateBrochure from './CreateBrochure.jsx';
@@ -13,11 +13,13 @@ const Library = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [userBrochures, setUserBrochures] = useState([]);
     const [brochureToEdit, setBrochureToEdit] = useState(null);
+    const [loading, setLoading] = useState(true); // Loading state
 
     const close = 'close';
     const arrow = 'arrow';
 
     const loadUserBrochures = useCallback(async () => {
+        setLoading(true); // Start loading
         try {
             const storedUserBrochures = await AsyncStorage.getItem('UserBrochures');
             if (storedUserBrochures) {
@@ -27,6 +29,9 @@ const Library = () => {
             }
         } catch (error) {
             console.error('Failed to load user brochures:', error);
+            Alert.alert("Error", "Failed to load brochures.");
+        } finally {
+            setLoading(false); // End loading
         }
     }, []);
 
@@ -44,17 +49,34 @@ const Library = () => {
         setBrochureToEdit(null);
     };
 
-    useEffect(() => {
-        loadUserBrochures();
-    }, [loadUserBrochures]);
+    useFocusEffect(
+        useCallback(() => {
+            loadUserBrochures();
+        }, [loadUserBrochures])
+    );
 
     const combinedBrochures = [...library, ...userBrochures];
 
     const deleteUserBrochure = async (item) => {
-        const updatedBrochures = userBrochures.filter(brochure => brochure.name !== item.name);
-        setUserBrochures(updatedBrochures);
-        await AsyncStorage.setItem('UserBrochures', JSON.stringify(updatedBrochures));
-        Alert.alert("Deleted", "Brochure has been removed from your album.");
+        Alert.alert(
+            "Delete Brochure",
+            "Are you sure you want to delete this brochure?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Delete", 
+                    onPress: async () => {
+                        const updatedBrochures = userBrochures.filter(brochure => brochure.name !== item.name);
+                        setUserBrochures(updatedBrochures);
+                        await AsyncStorage.setItem('UserBrochures', JSON.stringify(updatedBrochures));
+                        Alert.alert("Deleted", "Brochure has been removed from your album.");
+                    }
+                }
+            ]
+        );
     };
 
     const handleEditBrochure = (item) => {
@@ -98,7 +120,7 @@ const Library = () => {
                         style={styles.image} 
                     />
                     <Text style={styles.admiralName}>{item.admiral || item.name}</Text>
-                    {item.title && <Text style={styles.title}>{item.title}</Text>}
+                    <Text style={styles.title}>{item.title ? item.title : ''}</Text>
                 </TouchableOpacity>
             )}
     
@@ -126,40 +148,47 @@ const Library = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.goBackIcon} onPress={handleGoBack}>
-                <Icons type={arrow}/>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.plusIcon} onPress={handleAddBrochure}>
-                <Icons type={'plus'}/>
-            </TouchableOpacity>
-            <FlatList
-                data={combinedBrochures}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.admiral || item.id}
-                horizontal
-                pagingEnabled
-                onScroll={onScrollEnd}
-                showsHorizontalScrollIndicator={false}
-                style={styles.flatList}
-            />
-            <View style={styles.dotsContainer}>
-                {combinedBrochures.map((_, index) => (
-                    <View 
-                        key={index} 
-                        style={[styles.dot, selectedIndex === index ? styles.activeDot : null]} 
+            {loading ? (
+                <ActivityIndicator size="large" color="#fff" />
+            ) : (
+                <>
+                    <TouchableOpacity style={styles.goBackIcon} onPress={handleGoBack}>
+                        <Icons type={arrow}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.plusIcon} onPress={handleAddBrochure}>
+                        <Icons type={'plus'}/>
+                    </TouchableOpacity>
+                    <FlatList
+                        data={combinedBrochures}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => item.admiral || item.name}
+                        horizontal
+                        pagingEnabled
+                        onScroll={onScrollEnd}
+                        showsHorizontalScrollIndicator={false}
+                        style={styles.flatList}
                     />
-                ))}
-            </View>
+                    <View style={styles.dotsContainer}>
+                        {combinedBrochures.map((_, index) => (
+                            <View 
+                                key={index} 
+                                style={[styles.dot, selectedIndex === index ? styles.activeDot : null]} 
+                            />
+                        ))}
+                    </View>
 
-            <CreateBrochure 
-                visible={isModalVisible} 
-                onClose={closeModal}
-                onSubmit={handleBrochureSubmit}
-                brochureToEdit={brochureToEdit}
-            />
+                    <CreateBrochure 
+                        visible={isModalVisible} 
+                        onClose={closeModal}
+                        onSubmit={handleBrochureSubmit}
+                        brochureToEdit={brochureToEdit}
+                    />
+                </>
+            )}
         </View>
     );
 };
+
 
 
 
@@ -185,12 +214,12 @@ const styles = StyleSheet.create({
         zIndex: 10,
     },
     flatList: {
-        height: 600,
+        // height: 600,
         marginTop: 60
     },
     card: {
-        // width: 365,
-        width: 345,
+        width: 365,
+        // width: 345,
         height: 530,
         marginHorizontal: 10,
         backgroundColor: '#f9f9f9',
@@ -198,7 +227,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 10,
-        elevation: 2,
+        elevation: 4,
     },
     cardFront: {
         width: '100%',
@@ -221,7 +250,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#555',
         textAlign: 'center',
-        marginTop: 10
+        marginTop: 10,
     },
     factContainer: {
         padding: 15,
@@ -274,7 +303,25 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         right: 10
-    }
+    },
+    actionButtons: {
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        paddingBottom: 70
+    },
+    deleteButton: {
+        padding: 10,
+        width: 55,
+        height: 55,
+    },
+    editButton: {
+        padding: 10,
+        width: 55,
+        height: 55,
+    },
 });
 
 export default Library;

@@ -12,6 +12,7 @@ import LeaderboardScreen from './src/screens/LeaderboardScreen.jsx';
 import FightScreen from './src/screens/FightScreen.jsx'
 import AnalysisScreen from './src/screens/AnalysisScreen.jsx'
 import LibraryScreen from './src/screens/LibraryScreen.jsx'
+import BattleMapScreen from './src/screens/BattleMapScreen.jsx'
 
 enableScreens();
 
@@ -69,6 +70,11 @@ const App = () => {
         <Stack.Screen 
           name="LibraryScreen" 
           component={LibraryScreen} 
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+          name="BattleMapScreen" 
+          component={BattleMapScreen} 
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>

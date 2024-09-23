@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, TouchableOpacity, Text, View, StyleSheet, ImageBackground } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import AboutModal from './About';
 import Icons from './Icons';
 
 const Home = () => {
-//   const navigation = useNavigation();
+  const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
 
   const closeModal = async () => {
@@ -32,8 +32,7 @@ const Home = () => {
             <View style={styles.menuIcon}>
                 <Icons type={battle}/>
             </View>
-            <TouchableOpacity style={styles.btn}>
-            {/* onPress={() => navigation.navigate('')} */}
+            <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('BattleMapScreen')}>
               <Text style={styles.btnText}>Battle map</Text>
             </TouchableOpacity>
             </View>

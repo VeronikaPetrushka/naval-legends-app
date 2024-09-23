@@ -3,7 +3,6 @@ import { enableScreens } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { View } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from './src/screens/HomeScreen.jsx';
 import QuizModeScreen from './src/screens/QuizModeScreen.jsx';
 import NewcomerTopicsScreen from './src/screens/NewcomerTopicsScreen.jsx';

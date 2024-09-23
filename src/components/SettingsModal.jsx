@@ -3,6 +3,7 @@ import { Modal, View, Text, TouchableOpacity, StyleSheet, Share, Alert, Vibratio
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icons from './Icons';
 import { useMusic } from '../constants/context.js';
+import avatars from '../constants/avatars.js';
 
 const SettingsModal = ({ visible, onClose }) => {
     const { isPlaying, togglePlay } = useMusic();
@@ -14,9 +15,6 @@ const SettingsModal = ({ visible, onClose }) => {
         const loadSettings = async () => {
             try {
                 const storedVibration = await AsyncStorage.getItem('vibrationEnabled');
-
-                console.log('Stored Vibration:', storedVibration);
-
                 if (storedVibration !== null) {
                     setVibrationEnabled(JSON.parse(storedVibration));
                 }
@@ -52,13 +50,11 @@ const SettingsModal = ({ visible, onClose }) => {
 
         try {
             await AsyncStorage.setItem('vibrationEnabled', JSON.stringify(newVibrationState));
-            console.log('New Vibration State Stored:', newVibrationState);
+            if (newVibrationState) {
+                Vibration.vibrate();
+            }
         } catch (error) {
             console.log('Error saving vibration setting:', error);
-        }
-
-        if (newVibrationState) {
-            Vibration.vibrate();
         }
     };
 
@@ -83,9 +79,15 @@ const SettingsModal = ({ visible, onClose }) => {
 
     const handleReset = async () => {
         try {
+            // Reset user profile and avatar
+            await AsyncStorage.setItem('userProfile', "");
+            await AsyncStorage.setItem('userAvatar', avatars[0].id); // Set to default avatar
+
+            // Clear other data
             await AsyncStorage.removeItem('totalBalance');
             await AsyncStorage.removeItem('stickers');
             await resetDailyBonus();
+
             setTotalBalance(0);
             setShowResetConfirmation(false);
             onClose();
@@ -102,7 +104,7 @@ const SettingsModal = ({ visible, onClose }) => {
             Alert.alert('Error', 'There was a problem resetting your progress. Please try again later.');
         }
     };
-    
+
     return (
         <Modal
             transparent={true}

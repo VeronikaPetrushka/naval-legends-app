@@ -1,27 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, TouchableOpacity, Text, View, StyleSheet, ImageBackground } from 'react-native';
+import { SafeAreaView, TouchableOpacity, Text, View, StyleSheet, ImageBackground, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AboutModal from './About';
 import SettingsModal from './SettingsModal';
+import UserProfile from './UserProfile';
 import Icons from './Icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import avatars from '../constants/avatars.js';
 
 const Home = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [settingsModalVisible, setSettingsModalVisible] = useState(false);
+  const [userProfileModalVisible, setUserProfileModalVisible] = useState(false);
+  const [currentAvatar, setCurrentAvatar] = useState(avatars[0].avatarBack);
+  const [userName, setUserName] = useState('');
 
-  const closeModal = async () => {
+  const loadAvatar = async () => {
+    try {
+      const storedAvatarId = await AsyncStorage.getItem('userAvatar');
+      if (storedAvatarId) {
+        const avatar = avatars.find(img => img.id === storedAvatarId);
+        setCurrentAvatar(avatar ? avatar.avatarBack : avatars[0].avatarBack);
+      }
+    } catch (error) {
+      console.error('Error loading avatar:', error);
+    }
+  };
+
+  const loadName = async () => {
+    try {
+      const storedName = await AsyncStorage.getItem('userProfile');
+      setUserName(storedName || '');
+    } catch (error) {
+      console.error('Error loading name:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadAvatar();
+    loadName();
+  }, []);
+
+  const closeUserProfileModal = async () => {
+    setUserProfileModalVisible(false);
+    await loadAvatar(); // Reload avatar when closing modal
+    await loadName(); // Reload name when closing modal
+  };
+
+  const closeModal = () => {
     setModalVisible(false);
   };
 
-  const closeSettingsModal = async () => {
+  const closeSettingsModal = () => {
     setSettingsModalVisible(false);
   };
 
-    battle = 'battle';
-    bonus = 'bonus';
-    settings = 'settings';
-    about = 'about';
+  const battle = 'battle';
+  const bonus = 'bonus';
+  const settings = 'settings';
+  const about = 'about';
 
   return (
     <ImageBackground
@@ -31,47 +69,54 @@ const Home = () => {
     >
       <View style={styles.overlay}>
         <SafeAreaView style={styles.container}>
-          <Text style={styles.name}>Naval Legends</Text>
+          <TouchableOpacity style={styles.avatar} onPress={() => setUserProfileModalVisible(true)}>
+            <Image source={currentAvatar} style={styles.avatarImage} />
+          </TouchableOpacity>
+          <View style={styles.nameContainer}>
+            <Text style={styles.name}>{userName || "Admiral"}</Text>
+          </View>
+          <Text style={styles.title}>Naval Legends</Text>
           <View style={styles.btnsContainer}>
 
             <View style={styles.btnContainer}>
-            <View style={styles.menuIcon}>
+              <View style={styles.menuIcon}>
                 <Icons type={battle}/>
-            </View>
-            <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('BattleMapScreen')}>
-              <Text style={styles.btnText}>Battle map</Text>
-            </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('BattleMapScreen')}>
+                <Text style={styles.btnText}>Battle map</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.btnContainer}>
-            <View style={styles.menuIcon}>
+              <View style={styles.menuIcon}>
                 <Icons type={bonus}/>
-            </View>
-            <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('DailyBonusScreen')}> 
-              <Text style={styles.btnText}>Daily bonus</Text>
-            </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('DailyBonusScreen')}>
+                <Text style={styles.btnText}>Daily bonus</Text>
+              </TouchableOpacity>
             </View>
             
             <View style={styles.btnContainer}>
-            <View style={styles.menuIcon}>
+              <View style={styles.menuIcon}>
                 <Icons type={settings}/>
-            </View>
-            <TouchableOpacity style={styles.btn} onPress={() => setSettingsModalVisible(true)}>
-              <Text style={styles.btnText}>Settings</Text>
-            </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={styles.btn} onPress={() => setSettingsModalVisible(true)}>
+                <Text style={styles.btnText}>Settings</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.btnContainer}>
-            <View style={styles.menuIcon}>
+              <View style={styles.menuIcon}>
                 <Icons type={about}/>
-            </View>
-            <TouchableOpacity style={styles.btn} onPress={() => setModalVisible(true)}>
-              <Text style={styles.btnText}>About us</Text>
-            </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={styles.btn} onPress={() => setModalVisible(true)}>
+                <Text style={styles.btnText}>About us</Text>
+              </TouchableOpacity>
             </View>
 
           </View>
 
+          <UserProfile visible={userProfileModalVisible} onClose={closeUserProfileModal} />
           <AboutModal visible={modalVisible} onClose={closeModal} />
           <SettingsModal visible={settingsModalVisible} onClose={closeSettingsModal} />
         </SafeAreaView>
@@ -79,6 +124,7 @@ const Home = () => {
     </ImageBackground>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -101,12 +147,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  name: {
+  title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginTop: '-50%',
     textAlign: 'center',
-    color: 'white'
+    color: 'white',
+    marginTop: 0
   },
   btnsContainer: {
     width: '100%',
@@ -143,6 +190,43 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white'
   },
+  avatar: {
+    width: 90,
+    height: 130,
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    borderWidth: 2,
+    borderColor: 'white',
+    borderRadius: 2
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover'
+  },
+  nameContainer: {
+    padding: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: '#544b3c',
+    minWidth: 150,
+    width: 255,
+    position: 'absolute',
+    top: 20,
+    right: 120,
+    height: 45,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  name: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap'
+  }
 });
 
 export default Home;

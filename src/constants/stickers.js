@@ -8,6 +8,7 @@ const stickers = [
     {id: '7', sticker: require('../assets/stickers/sticker-7.png')},
     {id: '8', sticker: require('../assets/stickers/sticker-8.png')},
     {id: '9', sticker: require('../assets/stickers/sticker-9.png')},
+    {id: '10', sticker: require('../assets/stickers/sticker-10.jpg')},
 ];
 
 export default stickers;

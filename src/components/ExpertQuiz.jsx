@@ -1,8 +1,5 @@
-// stickers download
-// share results button
-
 import React, { useState, useEffect } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Share } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -147,6 +144,15 @@ const ExpertQuiz = ({ topic }) => {
         }
         setShowHintModal(false);
     };
+
+    const handleShare = async () => {
+        try {
+            const message = `I just completed the quiz on "${topicData.topic}"! I scored ${score} points with ${placedOptions.filter((option) => option !== null).length} / ${placedOptions.length} correct order!`;
+            await Share.share({ message });
+        } catch (error) {
+            console.log('Error sharing score', error);
+        }
+    };
     
 
     return (
@@ -161,10 +167,23 @@ const ExpertQuiz = ({ topic }) => {
                             {totalBalance}
                         </Text>
                     </View>
-                    <Text style={styles.title}>{topicData.topic}</Text>
-                    <Text style={styles.finishText}>Total Score: {score}</Text>
-                    <Text style={styles.finishText}>Time Taken: {60 - timer} seconds</Text>
-                    <Text style={styles.finishText}>Correct Options: {placedOptions.filter((option) => option !== null).length} / {placedOptions.length}</Text>
+                    <Text style={styles.finish}>Quiz Finished!</Text>
+                    <Text style={styles.quizTopicFinish}>{topicData.topic}</Text>
+                    <View style={styles.resultsContainerFinish}>
+                    <View style={styles.scoreContainer}>
+                        <View style={styles.scoreIcon}>
+                            <Icons type={quizScore}/>
+                        </View>
+                        <Text style={styles.scoreTextFinish}>{score}</Text>
+                    </View>
+                    <Text style={styles.timeTaken}>{60 - timer} seconds</Text>
+                    </View>
+                    <Text style={styles.summaryText}>
+                        Congratulations, you passed the level by answering {placedOptions.filter((option) => option !== null).length} out of {placedOptions.length} questions.
+                    </Text>
+                    <TouchableOpacity style={styles.goBackButton} onPress={handleShare}>
+                        <Text style={styles.goBackText}>Share Your Score</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}>
                         <Text style={styles.goBackText}>Go Back</Text>
                     </TouchableOpacity>
@@ -204,11 +223,11 @@ const ExpertQuiz = ({ topic }) => {
                     </Modal>
 
                     <TouchableOpacity
-                        style={styles.hintButton}
+                        style={[styles.hintButton, { opacity: score > 10 ? 1 : 0.5 }]} 
                         onPress={() => setShowHintModal(true)}
                         disabled={score < 10}
                     >
-                        <Text style={styles.hintText}>Use Hint (10 points)</Text>
+                            <Icons type={'mode'}/>
                     </TouchableOpacity>
 
                     <Modal
@@ -315,11 +334,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 30,
         textAlign: 'center',
-    },
-    score: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 20,
     },
     modalContainer: {
         flex: 1,
@@ -432,22 +446,26 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     finishContainer: {
-        flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
+        width: '100%',
+        height: '100%'
     },
     finishText: {
         fontSize: 20,
         marginBottom: 10,
     },
     goBackButton: {
-        padding: 10,
+        padding: 15,
         backgroundColor: '#8d7d65',
-        borderRadius: 5,
+        borderRadius: 10,
         marginTop: 20,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     goBackText: {
-        fontSize: 18,
+        fontSize: 19,
         color: '#fff',
     },
     timerText: {
@@ -463,7 +481,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         flexDirection: 'row',
         backgroundColor: '#625746',
-        marginBottom: 30
+        marginBottom: 10
     },
     modalContainer: {
         flex: 1,
@@ -503,7 +521,7 @@ const styles = StyleSheet.create({
         width: 150,
         backgroundColor: '#8d7d65',
         marginBottom: 20,
-        marginTop: -30
+        marginTop: -140
     },
     balanceIcon: {
         width: 40,
@@ -514,7 +532,63 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: 'white',
         fontWeight: 'bold'
-    }
+    },
+
+    finish: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 50
+    },
+    quizTopicFinish: {
+        fontWeight: 800,
+        fontSize: 28,
+        marginBottom: 70,
+        textAlign: 'center'
+    },
+    resultsContainerFinish: {
+        width: 500,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        backgroundColor: '#8d7d65',
+        marginBottom: 30
+    },
+    timeTaken: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white'
+    },
+    scoreContainerFinish: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row'
+    },
+    summaryText: {
+        fontSize: 22,
+        marginBottom: 100,
+        textAlign: 'center'
+    },
+    scoreTextFinish: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: 'white'
+    },
+    hintButton: {
+        height: 53,
+        width: 53,
+        borderRadius: 100,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: 'white',
+        backgroundColor: '#8d7d65',
+        padding: 10,
+        marginBottom: 10
+    },
 });
 
 export default ExpertQuiz;

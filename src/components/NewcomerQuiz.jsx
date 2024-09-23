@@ -1,8 +1,5 @@
-// stickers download
-// share results button
-
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, Vibration, Share, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import newcomer from '../constants/newcomer.js';
@@ -23,12 +20,17 @@ const NewcomerQuiz = ({ topic }) => {
     const [isHintUsed, setIsHintUsed] = useState(false);
     const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
     const [totalBalance, setTotalBalance] = useState(0);
+    const [isVibrationEnabled, setIsVibrationEnabled] = useState(false);
 
     const quizScore = 'score';
     const mode = 'mode';
     const balance = 'balance';
 
-     useEffect(() => {
+    const [downloadedStickers, setDownloadedStickers] = useState([]);
+    const [selectedSticker, setSelectedSticker] = useState(null);
+    const [isStickerDownloaded, setIsStickerDownloaded] = useState(false);
+
+    useEffect(() => {
         const fetchBalance = async () => {
             try {
                 const balance = await AsyncStorage.getItem('totalBalance');
@@ -40,7 +42,29 @@ const NewcomerQuiz = ({ topic }) => {
             }
         };
 
+        const fetchVibrationSetting = async () => {
+            try {
+                const vibrationSetting = await AsyncStorage.getItem('vibrationEnabled');
+                setIsVibrationEnabled(vibrationSetting === 'true');
+            } catch (error) {
+                console.log('Error fetching vibration setting', error);
+            }
+        };
+
+        const fetchDownloadedStickers = async () => {
+            try {
+                const stickers = await AsyncStorage.getItem('stickers');
+                if (stickers !== null) {
+                    setDownloadedStickers(JSON.parse(stickers));
+                }
+            } catch (error) {
+                console.log('Error fetching stickers', error);
+            }
+        };
+
         fetchBalance();
+        fetchVibrationSetting();
+        fetchDownloadedStickers();
     }, []);
 
     useEffect(() => {
@@ -62,13 +86,56 @@ const NewcomerQuiz = ({ topic }) => {
     const finishQuiz = async () => {
         setQuizFinished(true);
         clearInterval(timer);
-
+    
         try {
             const newBalance = totalBalance + score;
             await AsyncStorage.setItem('totalBalance', newBalance.toString());
             setTotalBalance(newBalance);
         } catch (error) {
             console.log('Error updating balance', error);
+        }
+    
+        const stickerId = selectedTopic.sticker;
+        setSelectedSticker(stickerId);
+    
+        const isDownloaded = downloadedStickers.includes(stickerId);
+        setIsStickerDownloaded(isDownloaded);
+    };
+    
+    useEffect(() => {
+        const fetchDownloadedStickers = async () => {
+            try {
+                const stickers = await AsyncStorage.getItem('stickers');
+                if (stickers !== null) {
+                    const parsedStickers = JSON.parse(stickers);
+                    setDownloadedStickers(parsedStickers);
+                    const isDownloaded = parsedStickers.includes(selectedTopic.sticker);
+                    setIsStickerDownloaded(isDownloaded);
+                }
+            } catch (error) {
+                console.log('Error fetching stickers', error);
+            }
+        };
+    
+        fetchDownloadedStickers();
+    }, [selectedTopic]);
+    
+
+    const handleDownloadSticker = async () => {
+        if (!isStickerDownloaded && selectedSticker) {
+            const updatedStickers = [...downloadedStickers, selectedSticker];
+            setDownloadedStickers(updatedStickers);
+            await AsyncStorage.setItem('stickers', JSON.stringify(updatedStickers));
+            setIsStickerDownloaded(true);
+        }
+    };
+
+    const handleShare = async () => {
+        try {
+            const message = `I just completed the quiz on "${selectedTopic.topic}"! I scored ${score} points with ${correctAnswersCount} / ${selectedTopic.questions.length} correct answers!`;
+            await Share.share({ message });
+        } catch (error) {
+            console.log('Error sharing score', error);
         }
     };
 
@@ -81,6 +148,10 @@ const NewcomerQuiz = ({ topic }) => {
             [option]: isCorrect ? 'correct' : 'incorrect',
             [selectedTopic.questions[currentQuestionIndex].correctAnswer]: 'correct',
         });
+
+        if (!isCorrect && isVibrationEnabled) {
+            Vibration.vibrate(500);
+        }
 
         if (isCorrect) {
             setScore(prevScore => prevScore + 100);
@@ -158,11 +229,27 @@ const NewcomerQuiz = ({ topic }) => {
                         <Text style={styles.scoreText}>{score}</Text>
                     </View>
                     <Text style={styles.timeTaken}>{60 - timeRemaining} seconds</Text>
-
                     </View>
                     <Text style={styles.summaryText}>
                         Congratulations, you passed the level by answering {correctAnswersCount} out of {selectedTopic.questions.length} questions.
                     </Text>
+                    {selectedSticker && (
+                        <View style={styles.stickerContainer}>
+                            <Image source={selectedSticker} style={styles.stickerImage} />
+                            <TouchableOpacity 
+                                style={[styles.downloadButton, isStickerDownloaded ? styles.downloadedButton : styles.downloadButton]} 
+                                onPress={handleDownloadSticker} 
+                                disabled={isStickerDownloaded}
+                            >
+                                <Text style={styles.downloadText}>
+                                    {isStickerDownloaded ? 'Downloaded' : 'Download'}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    <TouchableOpacity style={styles.goBackButton} onPress={handleShare}>
+                        <Text style={styles.goBackText}>Share Your Score</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}>
                         <Text style={styles.goBackText}>Go Back</Text>
                     </TouchableOpacity>
@@ -255,7 +342,7 @@ const styles = StyleSheet.create({
     },
     optionText: {
         color: '#fff',
-        fontSize: 19,
+        fontSize: 20,
     },
     scoreText: {
         fontSize: 22,
@@ -277,7 +364,7 @@ const styles = StyleSheet.create({
     },
     summaryText: {
         fontSize: 22,
-        marginBottom: 100,
+        marginBottom: 10,
         textAlign: 'center'
     },
     goBackButton: {
@@ -296,7 +383,7 @@ const styles = StyleSheet.create({
     oopsText: {
         color: 'red',
         fontSize: 24,
-        marginBottom: 30,
+        marginBottom: 10,
     },
     hintButton: {
         height: 53,
@@ -358,12 +445,12 @@ const styles = StyleSheet.create({
     finish: {
         fontSize: 30,
         fontWeight: 'bold',
-        marginBottom: 50
+        marginBottom: 20
     },
     quizTopicFinish: {
         fontWeight: 800,
         fontSize: 28,
-        marginBottom: 70,
+        marginBottom: 15,
         textAlign: 'center'
     },
     resultsContainer: {
@@ -431,7 +518,34 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: 'white',
         fontWeight: 'bold'
-    }
+    },
+    stickerContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+        marginBottom: 10,
+        flexDirection: 'row',
+        width: '100%'
+    },
+    stickerImage: {
+        width: 170,
+        height: 170,
+        marginRight: 30
+    },
+    downloadButton: {
+        padding: 10,
+        paddingHorizontal: 20,
+        backgroundColor: '#706450',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    downloadedButton: {
+        backgroundColor: '#a39783',
+    },
+    downloadText: {
+        color: '#fff',
+        fontSize: 18,
+    },
 });
 
 export default NewcomerQuiz;

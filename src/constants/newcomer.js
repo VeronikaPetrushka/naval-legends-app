@@ -2,62 +2,64 @@ const newcomer = [
     {
         topic: 'Admirals in Key Naval Battles',
         image: '',
+        sticker: require('../assets/stickers/sticker-1.png'),
         questions: [
             {
                 question: "Admiral Horatio Nelson commanded the British fleet at the Battle of Trafalgar.",
                 options: ["True", "False"],
-                correctAnswer: "True"
+                correctAnswer: "True",
               },
               {
                 question: "Admiral Isoroku Yamamoto commanded the Japanese fleet during the Battle of Midway.",
                 options: ["True", "False"],
-                correctAnswer: "True"
+                correctAnswer: "True",
               },
               {
                 question: "Admiral John Paul Jones commanded the French fleet during the Battle of Salamis.",
                 options: ["True", "False"],
-                correctAnswer: "False"
+                correctAnswer: "False",
               },
               {
                 question: "Admiral Mikhail Lazarev commanded the Russian fleet at the Battle of Sinop.",
                 options: ["True", "False"],
-                correctAnswer: "False"
+                correctAnswer: "False",
               },
               {
                 question: "Admiral André Dupé commanded the Spanish fleet at the Battle of Lepanto.",
                 options: ["True", "False"],
-                correctAnswer: "False"
+                correctAnswer: "False",
               },
               {
                 question: "Admiral François-Paul de Grasse played a key role in the Battle of the Chesapeake.",
                 options: ["True", "False"],
-                correctAnswer: "True"
+                correctAnswer: "True",
               },
               {
                 question: "Admiral William Hall commanded the British fleet during the Battle of Dogger Bank.",
                 options: ["True", "False"],
-                correctAnswer: "False"
+                correctAnswer: "False",
               },
               {
                 question: "Admiral Anders Rud commanded the Swedish fleet in the Battle of Narva.",
                 options: ["True", "False"],
-                correctAnswer: "False"
+                correctAnswer: "False",
               },
               {
                 question: "Admiral David Farragut commanded the American fleet during the Battle of Mobile Bay.",
                 options: ["True", "False"],
-                correctAnswer: "True"
+                correctAnswer: "True",
               },
               {
                 question: "Admiral Agustín García commanded the Portuguese fleet at the Battle of La Rochelle.",
                 options: ["True", "False"],
-                correctAnswer: "False"
+                correctAnswer: "False",
               }
         ]
     },
     {
         topic: 'Contributions of Admirals from Different Countries to World Naval History',
         image: '',
+        sticker: require('../assets/stickers/sticker-2.png'),
         questions: [
           {
             question: 'Admiral Yi Sun-sin from Korea is known for his victories during the Imjin War and his invention of the "turtle ship."',
@@ -114,6 +116,7 @@ const newcomer = [
       {
         topic: 'Admiral Ranks and Titles Across Different Countries and Historical Periods',
         image: '',
+        sticker: require('../assets/stickers/sticker-3.png'),
         questions: [
           {
             question: 'The rank of "Fleet Admiral" is the highest naval rank in the United States Navy, introduced during World War II.',
@@ -170,6 +173,7 @@ const newcomer = [
       {
         topic: 'Biographies of Notable Admirals: Their Achievements and Challenges',
         image: '',
+        sticker: require('../assets/stickers/sticker-4.png'),
         questions: [
           {
             question: 'Admiral Horatio Nelson, a British naval hero, lost his life at the Battle of Trafalgar in 1805.',
@@ -226,6 +230,7 @@ const newcomer = [
       {
         topic: 'Strategies and Tactics Used by Notable Admirals in Naval Battles',
         image: '',
+        sticker: require('../assets/stickers/sticker-5.png'),
         questions: [
           {
             question: 'Admiral Horatio Nelson famously employed the tactic of "crossing the T" during the Battle of Trafalgar, which involved cutting across the enemy\'s line of battle to bring his ships\' broadsides to bear.',
@@ -282,6 +287,7 @@ const newcomer = [
       {
         topic: 'Admirals’ Influence on Naval Fleet Development and Technology',
         image: '',
+        sticker: require('../assets/stickers/sticker-6.png'),
         questions: [
           {
             question: 'Admiral Horatio Nelson is credited with influencing the development of naval tactics, but not directly impacting naval technology.',
@@ -338,6 +344,7 @@ const newcomer = [
       {
         topic: 'Cultural Influence: Representation of Admirals in Literature, Art, and Film',
         image: '',
+        sticker: require('../assets/stickers/sticker-7.png'),
         questions: [
           {
             question: 'Admiral Horatio Nelson is often depicted in British art and literature as a heroic figure who epitomizes naval excellence and sacrifice.',

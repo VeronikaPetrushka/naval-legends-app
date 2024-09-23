@@ -61,7 +61,7 @@ const MenuPanel = () => {
                 // style={[styles.button, isCurrent('ResultsScreen') && styles.activeButton]} */}
                 <Icons type={shop} />
             </TouchableOpacity>
-            <Text style={styles.btnTxt}>Shop</Text>
+            <Text style={styles.btnTxt}>Stickers</Text>
             </View>
         
             <View style={styles.btnContainer}>

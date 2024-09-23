@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import stickers from '../constants/stickers.js';
 import Icons from './Icons';
 
 const generateRandomUsers = () => {
@@ -10,23 +11,10 @@ const generateRandomUsers = () => {
     'Admiral Togo', 'Admiral Cunningham', 'Admiral Halsey', 'Admiral Beatty', 'Admiral Jellicoe'
   ];
 
-  const admiralsImg = [
-    require('../assets/stickers/sticker-1.png'),
-    require('../assets/stickers/sticker-2.png'),
-    require('../assets/stickers/sticker-3.png'),
-    require('../assets/stickers/sticker-4.png'),
-    require('../assets/stickers/sticker-5.png'),
-    require('../assets/stickers/sticker-6.png'),
-    require('../assets/stickers/sticker-7.png'),
-    require('../assets/stickers/sticker-8.png'),
-    require('../assets/stickers/sticker-9.png'),
-    require('../assets/stickers/sticker-2.png')
-  ];
-
   return admiralNames.map((name, index) => ({
     name,
     score: Math.floor(Math.random() * (10000 - 500 + 1)) + 500,
-    image: admiralsImg[index],
+    image: stickers[index % stickers.length].sticker,
   }));
 };
 
@@ -183,6 +171,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 30,
     padding: 10,
+    paddingHorizontal: 20,
     backgroundColor: '#8d7d65',
     marginBottom: 30,
   },

@@ -2,14 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, TouchableOpacity, Text, View, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AboutModal from './About';
+import SettingsModal from './SettingsModal';
 import Icons from './Icons';
 
 const Home = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [settingsModalVisible, setSettingsModalVisible] = useState(false);
 
   const closeModal = async () => {
     setModalVisible(false);
+  };
+
+  const closeSettingsModal = async () => {
+    setSettingsModalVisible(false);
   };
 
     battle = 'battle';
@@ -50,8 +56,7 @@ const Home = () => {
             <View style={styles.menuIcon}>
                 <Icons type={settings}/>
             </View>
-            <TouchableOpacity style={styles.btn}>
-            {/* // onPress={() => navigation.navigate('')} */}
+            <TouchableOpacity style={styles.btn} onPress={() => setSettingsModalVisible(true)}>
               <Text style={styles.btnText}>Settings</Text>
             </TouchableOpacity>
             </View>
@@ -68,6 +73,7 @@ const Home = () => {
           </View>
 
           <AboutModal visible={modalVisible} onClose={closeModal} />
+          <SettingsModal visible={settingsModalVisible} onClose={closeSettingsModal} />
         </SafeAreaView>
       </View>
     </ImageBackground>

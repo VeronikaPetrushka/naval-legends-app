@@ -128,7 +128,6 @@ const SettingsModal = ({ visible, onClose }) => {
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                <MusicPlayer play={toggleLoudness} />
                     {showResetConfirmation ? (
                         <>
                             <Text style={styles.confirmationText}>

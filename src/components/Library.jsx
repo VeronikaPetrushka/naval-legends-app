@@ -49,11 +49,10 @@ const Library = () => {
         setBrochureToEdit(null);
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            loadUserBrochures();
-        }, [loadUserBrochures])
-    );
+
+    useEffect(() => {
+        loadUserBrochures();
+    }, [loadUserBrochures])
 
     const combinedBrochures = [...library, ...userBrochures];
 

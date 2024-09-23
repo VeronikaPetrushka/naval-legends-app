@@ -23,7 +23,7 @@ enableScreens();
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [toggleLoudness, setToggleLoudness] = useState(true);
+  const [toggleLoudness, setToggleLoudness] = useState(null);
 
   // Load loudness state from AsyncStorage
   useEffect(() => {

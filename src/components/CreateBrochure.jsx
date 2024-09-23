@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     imageButton: {
-        backgroundColor: '#618e4d',
+        backgroundColor: '#8d7d65',
         padding: 15,
         borderRadius: 10,
         marginBottom: 10,
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 17,
     },
     imagePreview: {
         width: '100%',
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         alignSelf: 'center',
         padding: 10,
-        backgroundColor: '#618e4d',
+        backgroundColor: '#706450',
         borderRadius: 12,
         width: "100%",
         justifyContent: 'center',
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     },
     closeButtonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 17,
     },
     errorText: {
         color: 'red',

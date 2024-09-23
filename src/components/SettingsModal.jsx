@@ -79,11 +79,9 @@ const SettingsModal = ({ visible, onClose }) => {
 
     const handleReset = async () => {
         try {
-            // Reset user profile and avatar
             await AsyncStorage.setItem('userProfile', "");
-            await AsyncStorage.setItem('userAvatar', avatars[0].id); // Set to default avatar
+            await AsyncStorage.setItem('userAvatar', avatars[0].id);
 
-            // Clear other data
             await AsyncStorage.removeItem('totalBalance');
             await AsyncStorage.removeItem('stickers');
             await resetDailyBonus();
@@ -139,7 +137,7 @@ const SettingsModal = ({ visible, onClose }) => {
                                 <Text style={[styles.toggleText, isPlaying ? styles.toggleTextOn : styles.toggleTextOff]}>
                                     {isPlaying ? 'On' : 'Off'}
                                 </Text>
-                                <TouchableOpacity style={styles.toggleContainer} onPress={handleToggleLoudness}>
+                                <TouchableOpacity style={[styles.toggleContainer, isPlaying ? styles.toggleContainer : styles.toggleContainerOff]} onPress={handleToggleLoudness}>
                                     <View style={[styles.toggle, isPlaying ? styles.toggleOn : styles.toggleOff]}></View>
                                 </TouchableOpacity>
                             </View>
@@ -149,7 +147,7 @@ const SettingsModal = ({ visible, onClose }) => {
                                 <Text style={[styles.toggleText, vibrationEnabled ? styles.toggleTextOn : styles.toggleTextOff]}>
                                     {vibrationEnabled ? 'On' : 'Off'}
                                 </Text>
-                                <TouchableOpacity style={styles.toggleContainer} onPress={handleToggleVibration}>
+                                <TouchableOpacity style={[styles.toggleContainer, vibrationEnabled ? styles.toggleContainer : styles.toggleContainerOff]} onPress={handleToggleVibration}>
                                     <View style={[styles.toggle, vibrationEnabled ? styles.toggleOn : styles.toggleOff]}></View>
                                 </TouchableOpacity>
                             </View>
@@ -213,6 +211,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 30,
         borderColor: '#8d7d65',
+    },
+    toggleContainerOff: {
+        borderColor: '#ccc',
     },
     toggleText: {
         fontSize: 16,

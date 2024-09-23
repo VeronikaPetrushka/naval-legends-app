@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icons from './Icons';

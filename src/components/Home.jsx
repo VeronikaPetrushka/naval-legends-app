@@ -44,8 +44,8 @@ const Home = () => {
 
   const closeUserProfileModal = async () => {
     setUserProfileModalVisible(false);
-    await loadAvatar(); // Reload avatar when closing modal
-    await loadName(); // Reload name when closing modal
+    await loadAvatar();
+    await loadName();
   };
 
   const closeModal = () => {

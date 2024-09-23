@@ -17,8 +17,8 @@ import LibraryScreen from './src/screens/LibraryScreen.jsx';
 import BattleMapScreen from './src/screens/BattleMapScreen.jsx';
 import DailyBonusScreen from './src/screens/DailyBonusScreen.jsx';
 import StickersScreen from './src/screens/StickersScreen.jsx';
-import { MusicProvider } from './src/constants/context.js'; // Adjust the path
-import MusicPlayer from './src/components/MusicPlayer'; // Adjust the path
+import { MusicProvider } from './src/constants/context.js';
+import MusicPlayer from './src/components/MusicPlayer';
 
 enableScreens();
 

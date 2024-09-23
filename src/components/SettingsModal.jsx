@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Share, Alert, Vibration } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icons from './Icons';
-import MusicPlayer from './MusicPlayer';
+import { useMusic } from '../constants/context.js';
 
 const SettingsModal = ({ visible, onClose }) => {
-    const [toggleLoudness, setToggleLoudness] = useState(true);
+    const { isPlaying, togglePlay } = useMusic();
     const [totalBalance, setTotalBalance] = useState(0);
     const [showResetConfirmation, setShowResetConfirmation] = useState(false);
     const [vibrationEnabled, setVibrationEnabled] = useState(true);
@@ -13,16 +13,10 @@ const SettingsModal = ({ visible, onClose }) => {
     useEffect(() => {
         const loadSettings = async () => {
             try {
-                const storedLoudness = await AsyncStorage.getItem('toggleLoudness');
                 const storedVibration = await AsyncStorage.getItem('vibrationEnabled');
 
-                // Add console logs to check retrieved values
-                console.log('Stored Loudness:', storedLoudness);
                 console.log('Stored Vibration:', storedVibration);
 
-                if (storedLoudness !== null) {
-                    setToggleLoudness(JSON.parse(storedLoudness)); // Parse the string value to boolean
-                }
                 if (storedVibration !== null) {
                     setVibrationEnabled(JSON.parse(storedVibration));
                 }
@@ -49,16 +43,7 @@ const SettingsModal = ({ visible, onClose }) => {
     };
 
     const handleToggleLoudness = async () => {
-        const newLoudnessState = !toggleLoudness;
-        setToggleLoudness(newLoudnessState);
-
-        try {
-            // Save the new loudness state as a string
-            await AsyncStorage.setItem('toggleLoudness', JSON.stringify(newLoudnessState));
-            console.log('New Loudness State Stored:', newLoudnessState); // Log the state being stored
-        } catch (error) {
-            console.log('Error saving loudness setting:', error);
-        }
+        togglePlay();
     };
 
     const handleToggleVibration = async () => {
@@ -67,7 +52,7 @@ const SettingsModal = ({ visible, onClose }) => {
 
         try {
             await AsyncStorage.setItem('vibrationEnabled', JSON.stringify(newVibrationState));
-            console.log('New Vibration State Stored:', newVibrationState); // Log the state being stored
+            console.log('New Vibration State Stored:', newVibrationState);
         } catch (error) {
             console.log('Error saving vibration setting:', error);
         }
@@ -118,7 +103,6 @@ const SettingsModal = ({ visible, onClose }) => {
         }
     };
     
-
     return (
         <Modal
             transparent={true}
@@ -150,11 +134,11 @@ const SettingsModal = ({ visible, onClose }) => {
 
                             <View style={styles.regulatorContainer}>
                                 <Text style={styles.regulatorText}>Loudness</Text>
-                                <Text style={[styles.toggleText, toggleLoudness ? styles.toggleTextOn : styles.toggleTextOff]}>
-                                    {toggleLoudness ? 'On' : 'Off'}
+                                <Text style={[styles.toggleText, isPlaying ? styles.toggleTextOn : styles.toggleTextOff]}>
+                                    {isPlaying ? 'On' : 'Off'}
                                 </Text>
                                 <TouchableOpacity style={styles.toggleContainer} onPress={handleToggleLoudness}>
-                                    <View style={[styles.toggle, toggleLoudness ? styles.toggleOn : styles.toggleOff]}></View>
+                                    <View style={[styles.toggle, isPlaying ? styles.toggleOn : styles.toggleOff]}></View>
                                 </TouchableOpacity>
                             </View>
 
@@ -182,6 +166,7 @@ const SettingsModal = ({ visible, onClose }) => {
         </Modal>
     );
 };
+
 
 
 const styles = StyleSheet.create({

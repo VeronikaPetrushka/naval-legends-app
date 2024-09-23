@@ -10,7 +10,7 @@ export const useMusic = () => useContext(MusicContext);
 
 export const MusicProvider = ({ children }) => {
     const [sound, setSound] = useState(null);
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(true);
 
     useEffect(() => {
         const music = new Sound('music.mp3', Sound.MAIN_BUNDLE, (error) => {

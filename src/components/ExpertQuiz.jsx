@@ -69,25 +69,27 @@ const ExpertQuiz = ({ topic }) => {
     };
 
     const handleDrop = (option, index) => {
-        setPlacedOptions((prevPlacedOptions) => {
-            const updatedPlacedOptions = [...prevPlacedOptions];
-            updatedPlacedOptions[index] = { ...option };
+        const updatedPlacedOptions = [...placedOptions];
+        updatedPlacedOptions[index] = option;
     
-            if (isCorrect(option, index)) {
-                setScore((prevScore) => prevScore + 100);
-            }
+        if (isCorrect(option, index)) {
+            setScore((prevScore) => prevScore + 100);
+        }
     
-            if (!updatedPlacedOptions.includes(null)) {
-                finishQuiz();
-            }
-    
-            return updatedPlacedOptions;
-        });
-    
+        setPlacedOptions(updatedPlacedOptions);
         setSelectedOption(null);
+    
+        if (!updatedPlacedOptions.includes(null)) {
+            finishQuiz();
+        }
+    
+        if (score >= 10) {
+            const correctOptions = topicData.correctOrder.map((item) => item.title);
+            const nextAvailableOption = topicData.options.find(option => correctOptions.includes(option.title));
+            if (nextAvailableOption) {
+            }
+        }
     };
-    
-    
 
     const isCorrect = (option, index) => {
         return option && option.title === topicData.correctOrder[index].title;
@@ -256,13 +258,13 @@ const ExpertQuiz = ({ topic }) => {
                     <View style={styles.quizContainer}>
                         {/* First Column: Draggable Options */}
                         <View style={styles.optionsContainer}>
-                        <DraggableFlatList
-                            data={topicData.options.filter(option => !placedOptions.includes(option)).map(option => ({ ...option }))}
-                            renderItem={renderOption}
-                            keyExtractor={(item, index) => `draggable-item-${index}`}
-                            onDragEnd={({ data }) => setPlacedOptions(data.map(option => ({ ...option })))}
-                            scrollEnabled={true}
-                        />
+                            <DraggableFlatList
+                                data={topicData.options.filter(option => !placedOptions.includes(option))}
+                                renderItem={renderOption}
+                                keyExtractor={(item, index) => `draggable-item-${index}`}
+                                onDragEnd={({ data }) => setPlacedOptions(data)}
+                                scrollEnabled={true}
+                            />
                         </View>
 
                         {/* Second Column: Correct Order Indices */}

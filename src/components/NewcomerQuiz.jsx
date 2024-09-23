@@ -385,7 +385,6 @@ const styles = StyleSheet.create({
     },
     summaryText: {
         fontSize: 22,
-        marginBottom: 10,
         textAlign: 'center',
         color: 'white'
     },

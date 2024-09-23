@@ -112,6 +112,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%'
     },
     stickerImage: {
         width: '44%',

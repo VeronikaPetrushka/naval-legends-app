@@ -7,6 +7,8 @@ Sound.setCategory('Playback');
 
 const MusicPlayer = ({ play }) => {
     const [sound, setSound] = useState(null);
+    
+    console.log('Current play state:', play);
 
     useEffect(() => {
         // Load and prepare the sound only once when the component mounts

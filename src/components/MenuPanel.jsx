@@ -24,6 +24,10 @@ const MenuPanel = () => {
         navigation.navigate('LibraryScreen');
     };
 
+    const handleNavigateToStickers = () => {
+        navigation.navigate('StickersScreen');
+    };
+
     const handleNavigateToLeaders = () => {
         navigation.navigate('LeaderboardScreen');
     };
@@ -33,7 +37,6 @@ const MenuPanel = () => {
 
             <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.button} onPress={handleNavigateToQuizMode}> 
-                {/* // style={[styles.button, isCurrent('StoreScreen') && styles.activeButton]} */}
                 <Icons type={quiz} />
             </TouchableOpacity>
             <Text style={styles.btnTxt}>Quiz</Text>
@@ -41,7 +44,6 @@ const MenuPanel = () => {
 
             <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.button} onPress={handleNavigateToFight}>
-                {/* // style={[styles.button, isCurrent('AlbumScreen') && styles.activeButton]} */}
                 <Icons type={fight} />
             </TouchableOpacity>
             <Text style={styles.btnTxt}>Fight</Text>
@@ -49,16 +51,13 @@ const MenuPanel = () => {
 
             <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.button} onPress={handleNavigateToStories}>
-                {/* // style={[styles.button, isCurrent('MainMenuScreen') && styles.activeButton]} */}
                 <Icons type={stories} />
             </TouchableOpacity>
             <Text style={styles.btnTxt}>Stories</Text>
             </View>
 
             <View style={styles.btnContainer}>
-            <TouchableOpacity style={styles.button}>
-                {/* // onPress={handleNavigateToResults} 
-                // style={[styles.button, isCurrent('ResultsScreen') && styles.activeButton]} */}
+            <TouchableOpacity style={styles.button} onPress={handleNavigateToStickers}>
                 <Icons type={shop} />
             </TouchableOpacity>
             <Text style={styles.btnTxt}>Stickers</Text>
@@ -66,7 +65,6 @@ const MenuPanel = () => {
         
             <View style={styles.btnContainer}>
             <TouchableOpacity style={styles.button} onPress={handleNavigateToLeaders}> 
-                {/* // style={[styles.button, isCurrent('SettingsScreen') && styles.activeButton]} */}
                 <Icons type={leaderBoard} />
             </TouchableOpacity>
             <Text style={styles.btnTxt}>Leaders</Text>

@@ -1,5 +1,3 @@
-// styles for battle description
-
 import React, { useState } from "react";
 import { SafeAreaView, Image, TouchableOpacity, Text, ScrollView, Modal, View } from "react-native";
 import { useNavigation } from '@react-navigation/native';
@@ -13,7 +11,7 @@ const BattleMap = () => {
 
     const closeModal = async () => {
         setModalVisible(false);
-      };
+    };
 
     const handleGoBack = () => {
         navigation.navigate('HomeScreen');
@@ -25,13 +23,13 @@ const BattleMap = () => {
         return (
             <ScrollView style={styles.battleDetails}>
                 <Text style={styles.battleTitle}>{selectedBattle.battle}</Text>
-                <Text style={styles.battleText}>Period: {selectedBattle.period}</Text>
-                <Text style={styles.battleText}>Admiral: {selectedBattle.admiral}</Text>
-                <Text style={styles.battleText}>Country: {selectedBattle.country}</Text>
-                <Text style={styles.battleText}>Location: {selectedBattle.location}</Text>
-                <Text style={styles.battleText}>Context: {selectedBattle.context}</Text>
-                <Text style={styles.battleText}>Description: {selectedBattle.description}</Text>
-                <Text style={styles.battleText}>Outcome: {selectedBattle.outcome}</Text>
+                <Text style={styles.battleText}><Text style={styles.italic}>Period:</Text> {selectedBattle.period}</Text>
+                <Text style={styles.battleText}><Text style={styles.italic}>Admiral:</Text> {selectedBattle.admiral}</Text>
+                <Text style={styles.battleText}><Text style={styles.italic}>Country:</Text> {selectedBattle.country}</Text>
+                <Text style={styles.battleText}><Text style={styles.italic}>Location:</Text> {selectedBattle.location}</Text>
+                <Text style={styles.battleText}><Text style={styles.italic}>Context:</Text> {selectedBattle.context}</Text>
+                <Text style={styles.battleText}><Text style={styles.italic}>Description:</Text> {selectedBattle.description}</Text>
+                <Text style={styles.battleText}><Text style={styles.italic}>Outcome:</Text> {selectedBattle.outcome}</Text>
             </ScrollView>
         );
     };
@@ -42,43 +40,41 @@ const BattleMap = () => {
                 <Icons type={'arrow'} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.hintIcon} onPress={() => setModalVisible(true)}>
-                <Icons type={'mode'}/>
+                <Icons type={'mode'} />
             </TouchableOpacity>
             <Image source={require('../assets/background/battle-map.png')} style={styles.mapImg} />
-            
-            <TouchableOpacity style={styles.battlePin1} onPress={() => setSelectedBattle(battle[0])}>
-                <Icons type={'pin'} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.battlePin2} onPress={() => setSelectedBattle(battle[1])}>
-                <Icons type={'pin'} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.battlePin3} onPress={() => setSelectedBattle(battle[2])}>
-                <Icons type={'pin'} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.battlePin4} onPress={() => setSelectedBattle(battle[3])}>
-                <Icons type={'pin'} />
-            </TouchableOpacity>
+
+            {battle.map((b, index) => (
+                <TouchableOpacity 
+                    key={index} 
+                    style={[styles[`battlePin${index + 1}`], selectedBattle === b ? styles.currentPin : {}]} 
+                    onPress={() => setSelectedBattle(b)}
+                >
+                    <Icons type={'pin'} />
+                </TouchableOpacity>
+            ))}
 
             {renderBattleDetails()}
 
             <Modal
-            transparent={true}
-            visible={modalVisible}
-            animationType="slide"
-            onRequestClose={closeModal}
-        >
-            <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Map usage</Text>
-                    <Text style={styles.modalText}>The map provides a detailed overview of the locations and important events of these battles to help you better understand their significance.
-                    Each of these battles is represented on an interactive map in the application. You can click on the battle markers to open detailed information about each battle, learn about the admirals who participated in them, the tactics they used, and how the results of these battles affected world history.</Text>
-                    <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-                        <Icons type={'close'}/>
-                    </TouchableOpacity>
+                transparent={true}
+                visible={modalVisible}
+                animationType="slide"
+                onRequestClose={closeModal}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Map usage</Text>
+                        <Text style={styles.modalText}>
+                            The map provides a detailed overview of the locations and important events of these battles to help you better understand their significance.
+                            Each of these battles is represented on an interactive map in the application. You can click on the battle markers to open detailed information about each battle, learn about the admirals who participated in them, the tactics they used, and how the results of these battles affected world history.
+                        </Text>
+                        <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                            <Icons type={'close'} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
-        </Modal>
-
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -100,8 +96,8 @@ const styles = {
         left: 10,
     },
     hintIcon: {
-        height: 53,
-        width: 53,
+        height: 43,
+        width: 43,
         borderRadius: 100,
         overflow: 'hidden',
         alignItems: 'center',
@@ -111,8 +107,8 @@ const styles = {
         backgroundColor: '#8d7d65',
         padding: 10,
         position: 'absolute',
-        top: 10,
-        right: 10
+        top: 20,
+        right: 20
     },
     closeButton: {
         padding: 10,
@@ -158,6 +154,13 @@ const styles = {
         top: 235,
         left: 310,
     },
+    currentPin: {
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 100,
+        backgroundColor: 'white'
+    },
     battleDetails: {
         padding: 10,
         backgroundColor: 'white',
@@ -174,6 +177,10 @@ const styles = {
     battleText: {
         fontSize: 18,
         marginBottom: 20,
+    },
+    italic: {
+        fontStyle: 'italic',
+        fontWeight: 600
     },
     modalContainer: {
         flex: 1,

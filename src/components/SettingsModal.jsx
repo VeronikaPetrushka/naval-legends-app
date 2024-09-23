@@ -10,18 +10,23 @@ const SettingsModal = ({ visible, onClose }) => {
     const [vibrationEnabled, setVibrationEnabled] = useState(true);
 
     useEffect(() => {
-        const loadVibrationSetting = async () => {
+        const loadSettings = async () => {
             try {
-                const storedSetting = await AsyncStorage.getItem('vibrationEnabled');
-                if (storedSetting !== null) {
-                    setVibrationEnabled(storedSetting === 'true');
+                const storedLoudness = await AsyncStorage.getItem('toggleLoudness');
+                const storedVibration = await AsyncStorage.getItem('vibrationEnabled');
+
+                if (storedLoudness !== null) {
+                    setToggleLoudness(storedLoudness === 'true');
+                }
+                if (storedVibration !== null) {
+                    setVibrationEnabled(storedVibration === 'true');
                 }
             } catch (error) {
-                console.log('Error loading vibration setting:', error);
+                console.log('Error loading settings:', error);
             }
         };
 
-        loadVibrationSetting();
+        loadSettings();
         if (visible) {
             retrieveBalance();
         }
@@ -38,8 +43,15 @@ const SettingsModal = ({ visible, onClose }) => {
         }
     };
 
-    const handleToggleLoudness = () => {
-        setToggleLoudness(!toggleLoudness);
+    const handleToggleLoudness = async () => {
+        const newLoudnessState = !toggleLoudness;
+        setToggleLoudness(newLoudnessState);
+
+        try {
+            await AsyncStorage.setItem('toggleLoudness', JSON.stringify(newLoudnessState));
+        } catch (error) {
+            console.log('Error saving loudness setting:', error);
+        }
     };
 
     const handleToggleVibration = async () => {

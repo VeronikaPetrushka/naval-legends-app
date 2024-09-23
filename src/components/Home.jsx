@@ -41,8 +41,7 @@ const Home = () => {
             <View style={styles.menuIcon}>
                 <Icons type={bonus}/>
             </View>
-            <TouchableOpacity style={styles.btn}> 
-            {/* // onPress={() => navigation.navigate('')} */}
+            <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('DailyBonusScreen')}> 
               <Text style={styles.btnText}>Daily bonus</Text>
             </TouchableOpacity>
             </View>

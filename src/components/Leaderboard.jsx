@@ -9,11 +9,24 @@ const generateRandomUsers = () => {
     'Admiral Nelson', 'Admiral Nimitz', 'Admiral Yamamoto', 'Admiral De Ruyter', 'Admiral Spruance', 
     'Admiral Togo', 'Admiral Cunningham', 'Admiral Halsey', 'Admiral Beatty', 'Admiral Jellicoe'
   ];
-  
-  return admiralNames.map(name => ({
+
+  const admiralsImg = [
+    require('../assets/stickers/sticker-1.png'),
+    require('../assets/stickers/sticker-2.png'),
+    require('../assets/stickers/sticker-3.png'),
+    require('../assets/stickers/sticker-4.png'),
+    require('../assets/stickers/sticker-5.png'),
+    require('../assets/stickers/sticker-6.png'),
+    require('../assets/stickers/sticker-7.png'),
+    require('../assets/stickers/sticker-8.png'),
+    require('../assets/stickers/sticker-9.png'),
+    require('../assets/stickers/sticker-2.png')
+  ];
+
+  return admiralNames.map((name, index) => ({
     name,
     score: Math.floor(Math.random() * (10000 - 500 + 1)) + 500,
-    // image: `https://source.unsplash.com/random/100x100?sig=${Math.random()}`
+    image: admiralsImg[index],
   }));
 };
 
@@ -23,7 +36,7 @@ const Leaderboard = () => {
   const [totalBalance, setTotalBalance] = useState(0);
 
   const balance = 'balance';
-  const arrow = 'arrow'
+  const arrow = 'arrow';
 
   useEffect(() => {
     setUsers(generateRandomUsers());
@@ -44,53 +57,52 @@ const Leaderboard = () => {
 
   const handleGoBack = () => {
     navigation.navigate('HomeScreen');
-};
+  };
 
   return (
     <ImageBackground
-    source={require('../assets/background/home.jpg')}
-    style={styles.backgroundImage}
-    resizeMode="cover"
+      source={require('../assets/background/home.jpg')}
+      style={styles.backgroundImage}
+      resizeMode="cover"
     >
-    <View style={styles.overlay}>
-    <View style={styles.container}>
-        <TouchableOpacity
-                style={styles.goBackIcon}
-                onPress={handleGoBack}
-                >
-                <Icons type={arrow}/>
-        </TouchableOpacity>
-      <View style={styles.balanceContainer}>
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.goBackIcon}
+            onPress={handleGoBack}
+          >
+            <Icons type={arrow}/>
+          </TouchableOpacity>
+          <View style={styles.balanceContainer}>
             <View style={styles.balanceIcon}>
-                <Icons type={balance}/>
+              <Icons type={balance}/>
             </View>
             <Text style={styles.balanceText}>
-                {totalBalance}
+              {totalBalance}
             </Text>
-      </View>
-      <Text style={styles.title}>Leaderboard</Text>
-      <FlatList
-        style={styles.usersList}
-        data={users}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.userContainer}>
-            <View  style={styles.userImage}></View>
-            {/* <Image source={{ uri: item.image }} style={styles.userImage} /> */}
-            <View style={styles.userInfo}>
-              <Text style={styles.userName}>{item.name}</Text>
-              <View style={styles.userScoreContainer}>
-              <View style={styles.scoreIcon}>
-                <Icons type={balance}/>
-              </View>
-              <Text style={styles.userScore}>{item.score}</Text>
-              </View>
-            </View>
           </View>
-        )}
-      />
-    </View>
-    </View>
+          <Text style={styles.title}>Leaderboard</Text>
+          <FlatList
+            style={styles.usersList}
+            data={users}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.userContainer}>
+                <Image source={item.image} style={styles.userImage} />
+                <View style={styles.userInfo}>
+                  <Text style={styles.userName}>{item.name}</Text>
+                  <View style={styles.userScoreContainer}>
+                    <View style={styles.scoreIcon}>
+                      <Icons type={balance} />
+                    </View>
+                    <Text style={styles.userScore}>{item.score}</Text>
+                  </View>
+                </View>
+              </View>
+            )}
+          />
+        </View>
+      </View>
     </ImageBackground>
   );
 };
@@ -133,7 +145,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 15,
     padding: 10,
-    paddingHorizontal: 20,
     backgroundColor: '#625746',
     borderRadius: 8,
     shadowColor: '#000',
@@ -141,18 +152,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-    alignItems: 'center'
   },
   userImage: {
-    width: 50,
-    height: 50,
+    width: 70,
+    height: 70,
     borderRadius: 10,
     marginRight: 15,
     borderWidth: 1,
     borderColor: 'white'
   },
   userInfo: {
-    width: '80%',
+    width: '75%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
@@ -161,7 +171,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
-    fontWeight: 'bold',
   },
   userScore: {
     fontSize: 18,
@@ -176,35 +185,34 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#8d7d65',
     marginBottom: 30,
-},
-balanceIcon: {
+  },
+  balanceIcon: {
     width: 40,
     height: 40,
     marginRight: 10
-},
-balanceText: {
+  },
+  balanceText: {
     fontSize: 22,
     color: 'white',
     fontWeight: 'bold'
-},
-userScoreContainer: {
+  },
+  userScoreContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-
-},
-scoreIcon: {
+  },
+  scoreIcon: {
     width: 30,
     height: 30,
     marginRight: 10
-},
-goBackIcon: {
+  },
+  goBackIcon: {
     width: 60,
     height: 60,
     padding: 10,
     position: 'absolute',
     top: 15,
     left: 10
-}
+  }
 });
 
 export default Leaderboard;

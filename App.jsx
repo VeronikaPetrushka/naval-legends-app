@@ -25,12 +25,13 @@ const Stack = createStackNavigator();
 const App = () => {
   const [toggleLoudness, setToggleLoudness] = useState(true);
 
+  // Load loudness state from AsyncStorage
   useEffect(() => {
     const loadLoudnessSetting = async () => {
       try {
         const storedSetting = await AsyncStorage.getItem('toggleLoudness');
         if (storedSetting !== null) {
-          setToggleLoudness(storedSetting === 'true');
+          setToggleLoudness(JSON.parse(storedSetting));
         }
       } catch (error) {
         console.log('Error loading loudness setting:', error);
@@ -40,9 +41,29 @@ const App = () => {
     loadLoudnessSetting();
   }, []);
 
+  // Update AsyncStorage whenever toggleLoudness changes
+  useEffect(() => {
+    const updateLoudnessSetting = async () => {
+      try {
+        await AsyncStorage.setItem('toggleLoudness', JSON.stringify(toggleLoudness));
+      } catch (error) {
+        console.log('Error saving loudness setting:', error);
+      }
+    };
+
+    updateLoudnessSetting();
+  }, [toggleLoudness]);  // Persist whenever toggleLoudness state changes
+
+  // Function to toggle loudness manually
+  const handleToggleLoudness = () => {
+    setToggleLoudness((prev) => !prev);  // Toggle between true and false
+  };
+
   return (
     <NavigationContainer>
+      {/* MusicPlayer gets the updated loudness state */}
       <MusicPlayer play={toggleLoudness} />
+
       <Stack.Navigator initialRouteName="HomeScreen">
         <Stack.Screen 
           name="HomeScreen" 

@@ -15,11 +15,15 @@ const SettingsModal = ({ visible, onClose }) => {
                 const storedLoudness = await AsyncStorage.getItem('toggleLoudness');
                 const storedVibration = await AsyncStorage.getItem('vibrationEnabled');
 
+                // Add console logs to check retrieved values
+                console.log('Stored Loudness:', storedLoudness);
+                console.log('Stored Vibration:', storedVibration);
+
                 if (storedLoudness !== null) {
-                    setToggleLoudness(storedLoudness === 'true');
+                    setToggleLoudness(JSON.parse(storedLoudness)); // Parse the string value to boolean
                 }
                 if (storedVibration !== null) {
-                    setVibrationEnabled(storedVibration === 'true');
+                    setVibrationEnabled(JSON.parse(storedVibration));
                 }
             } catch (error) {
                 console.log('Error loading settings:', error);
@@ -48,7 +52,9 @@ const SettingsModal = ({ visible, onClose }) => {
         setToggleLoudness(newLoudnessState);
 
         try {
+            // Save the new loudness state as a string
             await AsyncStorage.setItem('toggleLoudness', JSON.stringify(newLoudnessState));
+            console.log('New Loudness State Stored:', newLoudnessState); // Log the state being stored
         } catch (error) {
             console.log('Error saving loudness setting:', error);
         }
@@ -60,6 +66,7 @@ const SettingsModal = ({ visible, onClose }) => {
 
         try {
             await AsyncStorage.setItem('vibrationEnabled', JSON.stringify(newVibrationState));
+            console.log('New Vibration State Stored:', newVibrationState); // Log the state being stored
         } catch (error) {
             console.log('Error saving vibration setting:', error);
         }
@@ -173,6 +180,7 @@ const SettingsModal = ({ visible, onClose }) => {
         </Modal>
     );
 };
+
 
 const styles = StyleSheet.create({
     modalContainer: {

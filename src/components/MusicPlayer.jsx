@@ -35,6 +35,7 @@ const MusicPlayer = ({ play }) => {
         // Toggle play/pause based on the 'play' prop
         if (sound) {
             if (play) {
+                console.log('Music playing');
                 sound.play((success) => {
                     if (!success) {
                         console.log('Playback failed due to audio decoding errors');

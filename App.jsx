@@ -30,6 +30,7 @@ const App = () => {
     const loadLoudnessSetting = async () => {
       try {
         const storedSetting = await AsyncStorage.getItem('toggleLoudness');
+        console.log('Stored Loudness:', storedSetting);
         if (storedSetting !== null) {
           setToggleLoudness(JSON.parse(storedSetting));
         }

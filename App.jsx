@@ -25,12 +25,10 @@ const Stack = createStackNavigator();
 const App = () => {
   const [toggleLoudness, setToggleLoudness] = useState(null);
 
-  // Load loudness state from AsyncStorage
   useEffect(() => {
     const loadLoudnessSetting = async () => {
       try {
         const storedSetting = await AsyncStorage.getItem('toggleLoudness');
-        console.log('Stored Loudness:', storedSetting);
         if (storedSetting !== null) {
           setToggleLoudness(JSON.parse(storedSetting));
         }
@@ -42,7 +40,6 @@ const App = () => {
     loadLoudnessSetting();
   }, []);
 
-  // Update AsyncStorage whenever toggleLoudness changes
   useEffect(() => {
     const updateLoudnessSetting = async () => {
       try {
@@ -52,13 +49,15 @@ const App = () => {
       }
     };
 
-    updateLoudnessSetting();
-  }, [toggleLoudness]);  // Persist whenever toggleLoudness state changes
+    if (toggleLoudness !== null) {
+      updateLoudnessSetting(); // Persist the change only when the state is not null
+    }
+  }, [toggleLoudness]);
 
-  // Function to toggle loudness manually
   const handleToggleLoudness = () => {
-    setToggleLoudness((prev) => !prev);  // Toggle between true and false
+    setToggleLoudness((prev) => !prev); // Toggle between true and false
   };
+
 
   return (
     <NavigationContainer>

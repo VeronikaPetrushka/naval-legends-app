@@ -1,4 +1,3 @@
-// src/components/MusicPlayer.js
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import Sound from 'react-native-sound';
@@ -10,38 +9,42 @@ const MusicPlayer = ({ play }) => {
     const [sound, setSound] = useState(null);
 
     useEffect(() => {
-        console.log('Loading sound...');
+        // Load and prepare the sound
         const music = new Sound('music.mp3', Sound.MAIN_BUNDLE, (error) => {
             if (error) {
                 console.log('Failed to load sound', error);
                 return;
             }
             console.log('Sound loaded successfully');
-            // Loop the music
+            // Set the music to loop
             music.setNumberOfLoops(-1);
             setSound(music);
         });
-    
+
         return () => {
+            // Cleanup: Stop and release the sound when the component unmounts
             if (sound) {
-                sound.stop();
-                sound.release();
+                sound.stop(() => {
+                    sound.release();
+                });
             }
         };
     }, []);
-    
 
     useEffect(() => {
-        if (play && sound) {
-            sound.play((success) => {
-                if (success) {
-                    console.log('Successfully finished playing');
-                } else {
-                    console.log('Playback failed due to audio decoding errors');
-                }
-            });
-        } else if (sound) {
-            sound.pause();
+        // Toggle play/pause based on the 'play' prop
+        if (sound) {
+            if (play) {
+                sound.play((success) => {
+                    if (!success) {
+                        console.log('Playback failed due to audio decoding errors');
+                    }
+                });
+            } else {
+                sound.stop(() => {
+                    console.log('Music stopped');
+                });
+            }
         }
     }, [play, sound]);
 

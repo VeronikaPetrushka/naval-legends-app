@@ -16,7 +16,7 @@ import BattleMapScreen from './src/screens/BattleMapScreen.jsx';
 import DailyBonusScreen from './src/screens/DailyBonusScreen.jsx';
 import StickersScreen from './src/screens/StickersScreen.jsx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MusicPlayer from './src/components/MusicPlayer'; // Ensure correct path
+import MusicPlayer from './src/components/MusicPlayer';
 
 enableScreens();
 

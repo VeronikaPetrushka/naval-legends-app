@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, Vibration, Share, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, Vibration, Share, Image, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import newcomer from '../constants/newcomer.js';
@@ -207,6 +207,12 @@ const NewcomerQuiz = ({ topic }) => {
     const canUseHint = score >= 10 && !isHintUsed && selectedOption === null;
 
     return (
+        <ImageBackground
+        source={require('../assets/background/newcomer.jpg')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
         <View style={styles.quizContainer}>
             {quizFinished ? (
                 <View style={styles.summaryContainer}>
@@ -310,6 +316,8 @@ const NewcomerQuiz = ({ topic }) => {
                 </View>
             </Modal>
         </View>
+              </View>
+              </ImageBackground>
     );
 };
 
@@ -320,13 +328,26 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
     },
+    backgroundImage: {
+        width: '100%',
+        height: '110%',
+        justifyContent: 'center',
+      },
+      overlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+      },
     questionText: {
         fontSize: 22,
         marginBottom: 20,
         textAlign: 'center',
         fontWeight: 600,
         height: 200,
-        marginBottom: 100
+        marginBottom: 100,
+        color: 'white'
     },
     timerText: {
         fontSize: 18,
@@ -365,7 +386,8 @@ const styles = StyleSheet.create({
     summaryText: {
         fontSize: 22,
         marginBottom: 10,
-        textAlign: 'center'
+        textAlign: 'center',
+        color: 'white'
     },
     goBackButton: {
         padding: 15,
@@ -445,13 +467,15 @@ const styles = StyleSheet.create({
     finish: {
         fontSize: 30,
         fontWeight: 'bold',
-        marginBottom: 20
+        marginBottom: 20,
+        color: 'white'
     },
     quizTopicFinish: {
         fontWeight: 800,
         fontSize: 28,
         marginBottom: 15,
-        textAlign: 'center'
+        textAlign: 'center',
+        color: 'white'
     },
     resultsContainer: {
         width: 500,
@@ -481,7 +505,8 @@ const styles = StyleSheet.create({
         fontWeight: 800,
         fontSize: 28,
         marginBottom: 30,
-        textAlign: 'center'
+        textAlign: 'center',
+        color: 'white'
     },
     quizStata: {
         width: 500,

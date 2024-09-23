@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Share } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Share, ImageBackground } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -156,6 +156,12 @@ const ExpertQuiz = ({ topic }) => {
     
 
     return (
+        <ImageBackground
+        source={require('../assets/background/expert.jpg')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
         <View style={styles.container}>
             {isFinished ? (
                 <View style={styles.finishContainer}>
@@ -313,6 +319,8 @@ const ExpertQuiz = ({ topic }) => {
                 </>
             )}
         </View>
+              </View>
+              </ImageBackground>
     );
 };
 
@@ -325,15 +333,27 @@ const styles = StyleSheet.create({
         paddingBottom: 60,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
         width: '100%',
         height: '100%',
     },
+    backgroundImage: {
+        width: '100%',
+        height: '110%',
+        justifyContent: 'center',
+      },
+      overlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+      },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 30,
         textAlign: 'center',
+        color: 'white'
     },
     modalContainer: {
         flex: 1,
@@ -375,7 +395,7 @@ const styles = StyleSheet.create({
     },
     optionsContainer: {
         width: '47%',
-        height: '100%'
+        height: '85%'
     },
     optionButton: {
         padding: 10,
@@ -399,13 +419,13 @@ const styles = StyleSheet.create({
     subTitle: {
         fontSize: 14,
         color: '#d3d3d3',
-        textAlign: 'center'
+        textAlign: 'center',
     },
     indexContainer: {
         width: '47%',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        height: '100%'
+        height: '85%',
     },
     indexScroll: {
         width: '100%',
@@ -454,6 +474,7 @@ const styles = StyleSheet.create({
     finishText: {
         fontSize: 20,
         marginBottom: 10,
+        color: 'white'
     },
     goBackButton: {
         padding: 15,
@@ -537,13 +558,15 @@ const styles = StyleSheet.create({
     finish: {
         fontSize: 30,
         fontWeight: 'bold',
-        marginBottom: 50
+        marginBottom: 50,
+        color: 'white'
     },
     quizTopicFinish: {
         fontWeight: 800,
         fontSize: 28,
         marginBottom: 70,
-        textAlign: 'center'
+        textAlign: 'center',
+        color: 'white'
     },
     resultsContainerFinish: {
         width: 500,
@@ -569,7 +592,8 @@ const styles = StyleSheet.create({
     summaryText: {
         fontSize: 22,
         marginBottom: 100,
-        textAlign: 'center'
+        textAlign: 'center',
+        color: 'white'
     },
     scoreTextFinish: {
         fontSize: 22,

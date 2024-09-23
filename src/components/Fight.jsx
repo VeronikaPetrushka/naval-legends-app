@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     },
     descContainer: {
         width :'100%',
-        height: 400,
+        height: 340,
         marginTop: 50
     },
     situationContainer: {
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
         backgroundColor: 'white',
-        marginBottom: 30,
+        marginBottom: 20,
         width: '100%'
     },
     situationText: {

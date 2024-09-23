@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 28,
         fontWeight: 'bold',
-        marginBottom: 30,
+        marginBottom: 20,
         color: 'white'
     },
     battleContainer: {
@@ -167,11 +167,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 5,
+        width: '100%',
+        height: 590
     },
     battleImage: {
         minHeight: 280,
         minWidth: 280,
-        width: 330,
+        width: '100%',
         height: 300,
         resizeMode: 'cover',
         marginBottom: 20,
@@ -196,7 +198,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
         position: 'absolute',
-        bottom: 120
+        bottom: 90
     },
 });
 

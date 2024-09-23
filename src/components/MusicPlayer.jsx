@@ -9,23 +9,22 @@ const MusicPlayer = ({ play }) => {
     const [sound, setSound] = useState(null);
 
     useEffect(() => {
-        // Load and prepare the sound
+        // Load and prepare the sound only once
         const music = new Sound('music.mp3', Sound.MAIN_BUNDLE, (error) => {
             if (error) {
                 console.log('Failed to load sound', error);
                 return;
             }
             console.log('Sound loaded successfully');
-            // Set the music to loop
-            music.setNumberOfLoops(-1);
+            music.setNumberOfLoops(-1); // Set the music to loop indefinitely
             setSound(music);
         });
 
         return () => {
-            // Cleanup: Stop and release the sound when the component unmounts
-            if (sound) {
-                sound.stop(() => {
-                    sound.release();
+            // Cleanup: stop and release the sound when the component unmounts
+            if (music) {
+                music.stop(() => {
+                    music.release();
                 });
             }
         };
@@ -39,12 +38,12 @@ const MusicPlayer = ({ play }) => {
                 sound.play((success) => {
                     if (!success) {
                         console.log('Playback failed due to audio decoding errors');
+                        sound.stop(); // Stop if there was a playback issue
                     }
                 });
             } else {
-                sound.stop(() => {
-                    console.log('Music stopped');
-                });
+                sound.pause(); // Pause instead of stop to avoid loading again
+                console.log('Music paused');
             }
         }
     }, [play, sound]);

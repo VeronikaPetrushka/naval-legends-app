@@ -23,46 +23,46 @@ enableScreens();
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [toggleLoudness, setToggleLoudness] = useState(null);
+  // const [toggleLoudness, setToggleLoudness] = useState(null);
 
-  useEffect(() => {
-    const loadLoudnessSetting = async () => {
-      try {
-        const storedSetting = await AsyncStorage.getItem('toggleLoudness');
-        if (storedSetting !== null) {
-          setToggleLoudness(JSON.parse(storedSetting));
-        }
-      } catch (error) {
-        console.log('Error loading loudness setting:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const loadLoudnessSetting = async () => {
+  //     try {
+  //       const storedSetting = await AsyncStorage.getItem('toggleLoudness');
+  //       if (storedSetting !== null) {
+  //         setToggleLoudness(JSON.parse(storedSetting));
+  //       }
+  //     } catch (error) {
+  //       console.log('Error loading loudness setting:', error);
+  //     }
+  //   };
 
-    loadLoudnessSetting();
-  }, []);
+  //   loadLoudnessSetting();
+  // }, []);
 
-  useEffect(() => {
-    const updateLoudnessSetting = async () => {
-      try {
-        await AsyncStorage.setItem('toggleLoudness', JSON.stringify(toggleLoudness));
-      } catch (error) {
-        console.log('Error saving loudness setting:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const updateLoudnessSetting = async () => {
+  //     try {
+  //       await AsyncStorage.setItem('toggleLoudness', JSON.stringify(toggleLoudness));
+  //     } catch (error) {
+  //       console.log('Error saving loudness setting:', error);
+  //     }
+  //   };
 
-    if (toggleLoudness !== null) {
-      updateLoudnessSetting(); // Persist the change only when the state is not null
-    }
-  }, [toggleLoudness]);
+  //   if (toggleLoudness !== null) {
+  //     updateLoudnessSetting(); // Persist the change only when the state is not null
+  //   }
+  // }, [toggleLoudness]);
 
-  const handleToggleLoudness = () => {
-    setToggleLoudness((prev) => !prev); // Toggle between true and false
-  };
+  // const handleToggleLoudness = () => {
+  //   setToggleLoudness((prev) => !prev); // Toggle between true and false
+  // };
 
 
   return (
     <NavigationContainer>
       {/* MusicPlayer gets the updated loudness state */}
-      <MusicPlayer play={toggleLoudness} />
+      {/* <MusicPlayer play={toggleLoudness} /> */}
 
       <Stack.Navigator initialRouteName="HomeScreen">
         <Stack.Screen 

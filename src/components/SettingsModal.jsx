@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Share, Alert, Vibration } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icons from './Icons';
+import MusicPlayer from './MusicPlayer';
 
 const SettingsModal = ({ visible, onClose }) => {
     const [toggleLoudness, setToggleLoudness] = useState(true);
@@ -116,6 +117,7 @@ const SettingsModal = ({ visible, onClose }) => {
             Alert.alert('Error', 'There was a problem resetting your progress. Please try again later.');
         }
     };
+    
 
     return (
         <Modal
@@ -126,6 +128,7 @@ const SettingsModal = ({ visible, onClose }) => {
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
+                <MusicPlayer play={toggleLoudness} />
                     {showResetConfirmation ? (
                         <>
                             <Text style={styles.confirmationText}>

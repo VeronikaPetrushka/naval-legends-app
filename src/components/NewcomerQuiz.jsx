@@ -87,10 +87,13 @@ const NewcomerQuiz = ({ topic }) => {
         setQuizFinished(true);
         clearInterval(timer);
     
+        // Calculate new balance
+        const newBalance = totalBalance + score;
+    
         try {
-            const newBalance = totalBalance + score;
+            // Update balance in AsyncStorage
             await AsyncStorage.setItem('totalBalance', newBalance.toString());
-            setTotalBalance(newBalance);
+            setTotalBalance(newBalance); // Update local state
         } catch (error) {
             console.log('Error updating balance', error);
         }
@@ -101,6 +104,7 @@ const NewcomerQuiz = ({ topic }) => {
         const isDownloaded = downloadedStickers.includes(stickerId);
         setIsStickerDownloaded(isDownloaded);
     };
+    
     
     useEffect(() => {
         const fetchDownloadedStickers = async () => {

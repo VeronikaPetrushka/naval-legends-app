@@ -114,6 +114,16 @@ const Home = () => {
               </TouchableOpacity>
             </View>
 
+            <View style={styles.btnContainer}>
+              <View style={styles.folderIcon}>
+                <Icons type={'folder'}/>
+              </View>
+              <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('FoldersScreen')}>
+                <Text style={styles.btnText}>Folders</Text>
+              </TouchableOpacity>
+            </View>
+
+
           </View>
 
           <UserProfile visible={userProfileModalVisible} onClose={closeUserProfileModal} />
@@ -175,6 +185,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'white',
     marginBottom: 8
+  },
+  folderIcon: {
+    height: 53,
+    width: 53,
+    borderRadius: 10,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
   },
   btn: {
     padding: 15,

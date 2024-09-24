@@ -18,6 +18,8 @@ import DailyBonusScreen from './src/screens/DailyBonusScreen.jsx';
 import StickersScreen from './src/screens/StickersScreen.jsx';
 import { MusicProvider } from './src/constants/context.js';
 import MusicPlayer from './src/components/MusicPlayer';
+import FoldersScreen from './src/screens/FoldersScreen.jsx';
+import FolderDetailsScreen from './src/screens/FolderDetailsScreen.jsx'
 
 enableScreens();
 
@@ -93,6 +95,16 @@ const App = () => {
                         <Stack.Screen 
                             name="StickersScreen" 
                             component={StickersScreen} 
+                            options={{ headerShown: false }} 
+                        />
+                        <Stack.Screen 
+                            name="FoldersScreen" 
+                            component={FoldersScreen} 
+                            options={{ headerShown: false }} 
+                        />
+                        <Stack.Screen 
+                            name="FolderDetailsScreen" 
+                            component={FolderDetailsScreen} 
                             options={{ headerShown: false }} 
                         />
                     </Stack.Navigator>

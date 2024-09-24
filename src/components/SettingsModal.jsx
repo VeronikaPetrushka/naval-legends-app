@@ -85,6 +85,8 @@ const SettingsModal = ({ visible, onClose }) => {
             await AsyncStorage.removeItem('totalBalance');
             await AsyncStorage.removeItem('stickers');
             await AsyncStorage.removeItem('UserBrochures');
+            await AsyncStorage.removeItem('UserFolders');
+
             await resetDailyBonus();
 
             setTotalBalance(0);

@@ -64,6 +64,10 @@ const Icons = ({ type }) => {
       imageSource = require('../assets/library/plus.png');
       iconStyle = styles.plusIcon;
       break;
+    case 'add':
+      imageSource = require('../assets/library/plus.png');
+      iconStyle = styles.addIcon;
+      break;
     case 'folder':
       imageSource = require('../assets/menu/folder.png');
       break;
@@ -100,6 +104,12 @@ const styles = StyleSheet.create({
     height: '100%',
     objectFit: 'cover',
     tintColor: '#322d24',
+  },
+  addIcon: {
+    tintColor: 'white',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
   }
 });
 

@@ -52,8 +52,10 @@ const Home = () => {
     setModalVisible(false);
   };
 
-  const closeSettingsModal = () => {
+  const closeSettingsModal = async () => {
     setSettingsModalVisible(false);
+    await loadAvatar();
+    await loadName();
   };
 
   const battle = 'battle';

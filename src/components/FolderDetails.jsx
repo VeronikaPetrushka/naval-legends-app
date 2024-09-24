@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, TouchableOpacity, Image, FlatList, StyleSheet, Alert, SafeAreaView } from 'react-native';
+import { Text, TouchableOpacity, Image, FlatList, StyleSheet, Alert, SafeAreaView, View } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import Icons from './Icons';
 const FolderDetail = ({ folder }) => {
     const navigation = useNavigation();
     const [images, setImages] = useState(folder.images || []);
+    const [selectedImage, setSelectedImage] = useState(null); // State to handle selected image
 
     useEffect(() => {
         loadFolderImages();
@@ -32,7 +33,7 @@ const FolderDetail = ({ folder }) => {
         const options = {
             mediaType: 'photo',
         };
-    
+
         launchImageLibrary(options, async (response) => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
@@ -41,10 +42,10 @@ const FolderDetail = ({ folder }) => {
             } else if (response.assets && response.assets.length > 0) {
                 const selectedImage = response.assets[0];
                 const source = { uri: selectedImage.uri };
-    
+
                 const updatedImages = [...images, source];
                 setImages(updatedImages);
-    
+
                 const updatedFolder = { ...folder, images: updatedImages };
                 await updateFolderData(updatedFolder);
             }
@@ -62,8 +63,31 @@ const FolderDetail = ({ folder }) => {
         }
     };
 
+    const handleImagePress = (item) => {
+        setSelectedImage(item === selectedImage ? null : item); // Select or deselect image
+    };
+
+    const handleDeleteImage = async () => {
+        if (selectedImage) {
+            const updatedImages = images.filter(image => image.uri !== selectedImage.uri);
+            setImages(updatedImages);
+            const updatedFolder = { ...folder, images: updatedImages };
+            await updateFolderData(updatedFolder);
+            setSelectedImage(null); // Reset selected image after deletion
+        }
+    };
+
     const renderImage = ({ item }) => (
-        <Image source={{ uri: item.uri }} style={styles.image} />
+        <TouchableOpacity onPress={() => handleImagePress(item)} style={styles.imageWrapper}>
+            <Image source={{ uri: item.uri }} style={styles.image} />
+            {selectedImage && selectedImage.uri === item.uri && (
+                <View style={styles.overlay}>
+                    <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteImage}>
+                        <Icons type={'delete'}/>
+                    </TouchableOpacity>
+                </View>
+            )}
+        </TouchableOpacity>
     );
 
     return (
@@ -105,7 +129,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 20,
         marginTop: 70,
-        color: 'white'
+        color: 'white',
     },
     goBackButton: {
         width: 60,
@@ -124,24 +148,44 @@ const styles = StyleSheet.create({
         height: 70,
         position: 'absolute',
         right: 15,
-        top: 15
+        top: 15,
     },
     imageList: {
         padding: 10,
         width: '100%',
-        marginBottom: 100
+        marginBottom: 100,
     },
-    image: {
+    imageWrapper: {
+        position: 'relative',
         width: '45%',
         height: 180,
         margin: 10,
-        resizeMode: 'cover'
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+    },
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    deleteButton: {
+        padding: 10,
+        width: 80,
+        height: 80
     },
     noImagesText: {
         fontSize: 18,
         textAlign: 'center',
         marginTop: 50,
-        color: 'white'
+        color: 'white',
     },
 });
 

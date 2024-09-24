@@ -83,12 +83,6 @@ const ExpertQuiz = ({ topic }) => {
             finishQuiz();
         }
     
-        if (score >= 10) {
-            const correctOptions = topicData.correctOrder.map((item) => item.title);
-            const nextAvailableOption = topicData.options.find(option => correctOptions.includes(option.title));
-            if (nextAvailableOption) {
-            }
-        }
     };
 
     const isCorrect = (option, index) => {

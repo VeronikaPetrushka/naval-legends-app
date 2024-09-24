@@ -31,7 +31,7 @@ const ExpertModal = ({ visible, onClose }) => {
                    To answer, you need to press the answer option and find the corresponding cell. If the sequence is correct, the cell will be highlighted in blue.
                    </Text>
                    <Text style={styles.modalText}>
-                   You receives 100 coins for the correct answer. Coins can be used to buy additional hints to make it easier to pass the level. After successfully passing the level, you receives an original sticker.                  
+                   You receives 100 coins for the correct answer. Coins can be used to buy additional hints to make it easier to pass the level. After successfully passing the level, you can share your achievements.                  
                    </Text>
                     </ScrollView>
                     <TouchableOpacity style={styles.closeButton} onPress={onClose}>

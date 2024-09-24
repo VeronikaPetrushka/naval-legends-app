@@ -6,6 +6,7 @@ import { Calendar } from 'react-native-calendars';
 
 const CreateBrochure = ({ visible, onClose, onSubmit, brochureToEdit }) => {
     const [name, setName] = useState('');
+    const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState(null);
@@ -15,6 +16,7 @@ const CreateBrochure = ({ visible, onClose, onSubmit, brochureToEdit }) => {
     useEffect(() => {
         if (brochureToEdit) {
             setName(brochureToEdit.name);
+            setTitle(brochureToEdit.title);
             setDate(brochureToEdit.date);
             setDescription(brochureToEdit.description);
             setImage(brochureToEdit.image ? { uri: brochureToEdit.image } : null);
@@ -25,6 +27,7 @@ const CreateBrochure = ({ visible, onClose, onSubmit, brochureToEdit }) => {
 
     const clearFields = () => {
         setName('');
+        setTitle('');
         setDate('');
         setDescription('');
         setImage(null);
@@ -59,10 +62,15 @@ const CreateBrochure = ({ visible, onClose, onSubmit, brochureToEdit }) => {
 
     const handleSubmit = async () => {
         let valid = true;
-        const newErrors = { name: '', date: '', image: '' };
+        const newErrors = { name: '', title: '', date: '', image: '' };
 
         if (name.length < 2 || name.length > 30) {
             newErrors.name = 'Name must be between 2 and 30 characters';
+            valid = false;
+        }
+
+        if (title.length > 60) {
+            newErrors.name = 'Title must be less than 60 characters';
             valid = false;
         }
 
@@ -77,7 +85,7 @@ const CreateBrochure = ({ visible, onClose, onSubmit, brochureToEdit }) => {
         }
 
         if (valid) {
-            const newBrochure = { name, date, description, image: image.uri };
+            const newBrochure = { name, title, date, description, image: image.uri };
 
             try {
                 const storedBrochures = await AsyncStorage.getItem('UserBrochures');
@@ -142,6 +150,15 @@ const CreateBrochure = ({ visible, onClose, onSubmit, brochureToEdit }) => {
                             maxLength={30}
                         />
                         {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Enter Title"
+                            value={title}
+                            onChangeText={setTitle}
+                            maxLength={30}
+                        />
+                        {errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
 
                         <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)} style={styles.dateInput}>
                             <Text>{date ? date : 'Select Date'}</Text>

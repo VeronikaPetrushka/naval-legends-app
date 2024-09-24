@@ -13,13 +13,13 @@ const Library = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [userBrochures, setUserBrochures] = useState([]);
     const [brochureToEdit, setBrochureToEdit] = useState(null);
-    const [loading, setLoading] = useState(true); // Loading state
+    const [loading, setLoading] = useState(true);
 
     const close = 'close';
     const arrow = 'arrow';
 
     const loadUserBrochures = useCallback(async () => {
-        setLoading(true); // Start loading
+        setLoading(true);
         try {
             const storedUserBrochures = await AsyncStorage.getItem('UserBrochures');
             if (storedUserBrochures) {
@@ -31,7 +31,7 @@ const Library = () => {
             console.error('Failed to load user brochures:', error);
             Alert.alert("Error", "Failed to load brochures.");
         } finally {
-            setLoading(false); // End loading
+            setLoading(false);
         }
     }, []);
 
@@ -120,10 +120,8 @@ const Library = () => {
                     />
                     <Text style={styles.admiralName}>{item.admiral || item.name}</Text>
                     <Text style={styles.title}>{item.title ? item.title : ''}</Text>
-                </TouchableOpacity>
-            )}
-    
-            {userBrochures.some(brochure => brochure.name === item.name) && (
+                    {userBrochures.some(brochure => brochure.name === item.name)
+             && (
                 <View style={styles.actionButtons}>
                     <TouchableOpacity onPress={() => deleteUserBrochure(item)} style={styles.deleteButton}>
                         <Icons type={'delete'} />
@@ -132,6 +130,9 @@ const Library = () => {
                         <Icons type={'edit'} />
                     </TouchableOpacity>
                 </View>
+            )
+            }
+                </TouchableOpacity>
             )}
         </View>
     );
@@ -232,8 +233,8 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         alignItems: 'center',
-        justifyContent: 'flex-start',
-        padding: 10
+        justifyContent: 'space-between',
+        padding: 10,
     },
     image: {
         width: '100%',
@@ -305,21 +306,26 @@ const styles = StyleSheet.create({
     },
     actionButtons: {
         width: '100%',
-        height: '100%',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        paddingBottom: 70
+        height: 0
     },
     deleteButton: {
         padding: 10,
         width: 55,
         height: 55,
+        position: 'absolute',
+        bottom: 35,
+        left: 0
     },
     editButton: {
         padding: 10,
         width: 55,
         height: 55,
+        position: 'absolute',
+        bottom: 35,
+        right: 0
     },
 });
 
